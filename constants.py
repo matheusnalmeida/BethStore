@@ -11,7 +11,7 @@ CategoriaDecoracao = Categoria(
 )
 
 CategoriaBeleza = Categoria(
-    descricao = "Categoria para heleza",
+    descricao = "Categoria para beleza",
     setor = "Beleza"
 )
 
