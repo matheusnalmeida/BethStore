@@ -1,0 +1,23 @@
+{% extends "shared/base.html" %}
+{% block title %}Home Page{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage/index.css') }}" />
+{% endblock %}
+{% block content %}
+<div class="container" style="text-align: center;">
+    <h1>Bem vindo a Beth Store!</h1>
+    <div class="sub-text">
+        O que deseja fazer?
+    </div>
+    <br>
+    <div class="buttons-options">
+        <a class="btn btn-primary" href="{{ url_for('produto.index') }}" style="margin-right: 10px;">
+            Gerenciar produtos
+        </a>
+        <a class="btn btn-primary" href="{{ url_for('categoria.index') }}">
+            Gerenciar categorias
+        </a>
+    </div>
+</div>
+{% endblock %}

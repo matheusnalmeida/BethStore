@@ -1,0 +1,9 @@
+.sub-text{
+    text-align: center;
+}
+
+.buttons-options{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
