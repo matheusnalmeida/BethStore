@@ -1,0 +1,7 @@
+# LIBS JS
+
+# LIB DE FRETE DOS CORREIOS
+https://github.com/Deividy/frete
+
+# Comando para baixar as dependencias
+- npm i
