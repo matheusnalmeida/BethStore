@@ -1,7 +1,7 @@
 from statistics import quantiles
 from unicodedata import category
 from flask import Blueprint, redirect, render_template, request, url_for, session
-from model.cliente import cliente
+from model.cliente import Cliente
 from extensions.extensions import db
 
 cliente = Blueprint('cliente', __name__, template_folder='../view', url_prefix='/cliente')
