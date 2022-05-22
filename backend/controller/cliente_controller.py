@@ -36,7 +36,11 @@ def register():
             cpf = request.form['cpf'],
             cep = request.form['cep']
         )
-        
+
+        if Cliente.query.filter_by(cpf=cliente.cpf).first() != None:
+            result = Result(success=False, message="Já existe um cliente com este CPF")
+            return render_template('cliente/register.html', cliente=cliente, result=result.to_json())
+
         result = cliente.is_valid()
         if result.success:
             db.session.add(cliente)
