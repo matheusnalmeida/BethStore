@@ -3,8 +3,8 @@ from unicodedata import category
 from flask import Blueprint, redirect, render_template, request, url_for, session, jsonify
 from model.cliente import Cliente
 from extensions.extensions import db
-
-cliente = Blueprint('cliente', __name__, template_folder='../view', url_prefix='/cliente')
+from model.shared.result import Result
+cliente = Blueprint('cliente', __name__, template_folder="../view", url_prefix="/cliente")
 
 @cliente.route('/')
 def index():
@@ -26,6 +26,7 @@ def register():
             cpf = "",
             cep = None
         )
+        return render_template('cliente/register.html', cliente=cliente)
         return jsonify(cliente.to_json())
     
     if request.method == 'POST':
@@ -38,7 +39,15 @@ def register():
         )
 
         if Cliente.query.filter_by(cpf=cliente.cpf).first() != None:
-            result = result(success=False, message="Já existe um cliente com este CPF")
+            result = Result(success=False, message="Já existe um cliente com este CPF")
+            return render_template('cliente/register.html', cliente=cliente, result=result.to_json())
+
+        if len(cliente.cpf) > 11:
+            result = Result(success=False, message="CPF inválido")
+            return render_template('cliente/register.html', cliente=cliente, result=result.to_json())
+
+        elif len(cliente.cpf) < 11:
+            result = Result(success=False, message="CPF inválido")
             return render_template('cliente/register.html', cliente=cliente, result=result.to_json())
 
         result = cliente.is_valid()

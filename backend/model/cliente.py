@@ -5,12 +5,12 @@ from model.shared.result import Result
 class Cliente(db.Model):
     __tablename__ = 'clientes'
 
-    nome = Column(db.String(250), nullable = False)
+    id = db.Column(db.Integer, primary_key=True)
+    nome = Column(db.String(250), nullable=False)
     telefone = Column(db.String(11), nullable = False)
     email = Column(db.String(250), nullable = False)
     cpf = Column(db.String(11), nullable = False)
     cep = Column(db.String(8), nullable = False)
-
 
     def is_valid(self) -> Result:
         if (
@@ -34,7 +34,6 @@ class Cliente(db.Model):
 
     def to_json(self):
         return {
-            "id": self.id,
             "nome": self.nome,
             "telefone": self.telefone,
             "email": self.email,
