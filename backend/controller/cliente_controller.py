@@ -1,6 +1,6 @@
 from statistics import quantiles
 from unicodedata import category
-from flask import Blueprint, redirect, render_template, request, url_for, session
+from flask import Blueprint, redirect, render_template, request, url_for, session, jsonify
 from model.cliente import Cliente
 from extensions.extensions import db
 
@@ -26,7 +26,7 @@ def register():
             cpf = "",
             cep = None
         )
-        return render_template('cliente/register.html', cliente=cliente)
+        return jsonify(cliente.to_json())
     
     if request.method == 'POST':
         cliente = Cliente(
@@ -38,7 +38,7 @@ def register():
         )
 
         if Cliente.query.filter_by(cpf=cliente.cpf).first() != None:
-            result = Result(success=False, message="Já existe um cliente com este CPF")
+            result = result(success=False, message="Já existe um cliente com este CPF")
             return render_template('cliente/register.html', cliente=cliente, result=result.to_json())
 
         result = cliente.is_valid()

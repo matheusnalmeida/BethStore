@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, request, url_for, sessio
 from extensions.extensions import db
 from model.categoria import Categoria
 
-categoria = Blueprint('categoria', __name__, template_folder='templates', url_prefix="/categoria")
+categoria = Blueprint('categoria', __name__, template_folder="../view", url_prefix="/categoria")
 
 @categoria.route('/')
 def index():

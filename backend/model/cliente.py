@@ -31,3 +31,13 @@ class Cliente(db.Model):
         self.email = cliente.email
         self.cpf = cliente.cpf
         self.cep = cliente.cep
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "telefone": self.telefone,
+            "email": self.email,
+            "cpf": self.cpf,
+            "cep": self.cep
+        }
