@@ -1,44 +1,26 @@
-from flask import Blueprint, redirect, render_template, request, url_for, session
+import json
+from flask import Blueprint, jsonify, redirect, render_template, request, url_for, session
 from extensions.extensions import db
 from model.categoria import Categoria
+from model.shared.result import Result
+from utils import get_json_val
 
 categoria = Blueprint('categoria', __name__, template_folder="../view", url_prefix="/categoria")
 
 @categoria.route('/')
-def index():
-    result = None
-    if session.get("categoria_result") != None:
-        result = session["categoria_result"]
-        session.pop("categoria_result")
-
+def index():    
     categorias = Categoria.query.all()
-    return render_template('categoria/index.html', categorias=categorias, result=result)
+    result = Result(success=True, data=categorias).to_json()
+    return jsonify(result)
 
-@categoria.route('/register', methods=['GET', 'POST'])
+@categoria.route('/register', methods=['POST'])
 def register():
-    if request.method == 'GET':
-        categoria=Categoria(
-            descricao = '',
-            setor = ''
-        )
-        return render_template('categoria/register.html', categoria=categoria)
-
-    if request.method == 'POST':
-        categoria = Categoria(
-            
-            descricao = request.form['descricao'],
-            setor = request.form['setor']
-        )
-
-        result = categoria.is_valid()
-        if result.success:
-            db.session.add(categoria)
-            db.session.commit()
-            result.message = 'Categoria cadastrada com sucesso!'
-            session['categoria_result'] = result.to_json()
-            return redirect(url_for('categoria.index'))
-
-        return render_template('categoria/register.html', categoria=categoria, result=result.to_json())
+    categoria_json = request.get_json()
+    categoria = Categoria(        
+        descricao = get_json_val(categoria_json, 'descricao'),
+        setor = get_json_val(categoria_json, 'setor')
+    )
+    return categoria_json
 
 @categoria.route('<int:id>/update', methods=['GET', 'POST'])
 def update(id):
