@@ -11,7 +11,8 @@ class Cliente(db.Model):
     email = Column(db.String(250), nullable = False)
     cpf = Column(db.String(11), nullable = False)
     cep = Column(db.String(8), nullable = False)
-
+    ativo = Column(db.Boolean, default=True, nullable=False)
+    
     def is_valid(self) -> Result:
         if (
             not self.nome or len(self.nome) == 0 or
@@ -22,6 +23,9 @@ class Cliente(db.Model):
         ):
             return Result(success= False, message="Preencha todos os campos!")
 
+        if len(self.cpf) != 11:
+            return Result(success=False, message="CPF inválido")
+        
         return Result(success=True)
 
     
@@ -31,12 +35,3 @@ class Cliente(db.Model):
         self.email = cliente.email
         self.cpf = cliente.cpf
         self.cep = cliente.cep
-
-    def to_json(self):
-        return {
-            "nome": self.nome,
-            "telefone": self.telefone,
-            "email": self.email,
-            "cpf": self.cpf,
-            "cep": self.cep
-        }

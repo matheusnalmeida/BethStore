@@ -1,6 +1,7 @@
 from sqlalchemy import Column
 from extensions.extensions import db
 from model.shared.result import Result
+from utils import model_to_json
 
 class Produto(db.Model):
     __tablename__ = 'produtos'
@@ -14,6 +15,7 @@ class Produto(db.Model):
     descricao = Column(db.String(250), nullable = False)
     categoria_codigo = db.Column(db.Integer, db.ForeignKey('categoria.codigo'), nullable=False)
     categoria = db.relationship("Categoria", backref="categoria", uselist=False) 
+    ativo = Column(db.Boolean, default=True, nullable=False)
 
     def is_valid(self) -> Result:
         if (
@@ -39,3 +41,17 @@ class Produto(db.Model):
         self.tamanho = produto.tamanho
         self.descricao = produto.descricao
         self.categoria_codigo = produto.categoria_codigo
+    
+    def to_json(self):
+        return {
+            "codigo": self.codigo,
+            "marca": self.marca,
+            "modelo": self.modelo,
+            "preco": self.preco,
+            "quantidade": self.quantidade,
+            "tamanho": self.tamanho,
+            "descricao": self.descricao,
+            "ativo": self.ativo,
+            "categoria_codigo": self.categoria_codigo,
+            "categoria": model_to_json(self.categoria),
+        }

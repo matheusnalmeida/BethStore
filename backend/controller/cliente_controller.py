@@ -1,95 +1,104 @@
-from statistics import quantiles
-from unicodedata import category
-from flask import Blueprint, redirect, render_template, request, url_for, session, jsonify
+from flask import Blueprint, request, jsonify
+from sqlalchemy import true
 from model.cliente import Cliente
 from extensions.extensions import db
 from model.shared.result import Result
+from utils import get_json_val
+
 cliente = Blueprint('cliente', __name__, template_folder="../view", url_prefix="/cliente")
 
 @cliente.route('/')
 def index():
-    result = None
-    if session.get("cliente_result") != None:
-        result = session["cliente_result"]
-        session.pop("cliente_result")
-    clientes = Cliente.query.all()
-    return render_template('cliente/index.html', clientes=clientes, result=result)
+    clientes = Cliente.query.filter(Cliente.ativo==True).all()
+    result = Result(success=True, data=clientes).to_json()
+    return jsonify(result)
 
-@cliente.route('/register', methods=['GET', 'POST'])
+@cliente.route('/register', methods=['POST'])
 def register():
-    cliente = Cliente.query.all()
-    if request.method == 'GET':
-        cliente=Cliente(
-            nome = "",
-            telefone = "",
-            email = "",
-            cpf = "",
-            cep = None
-        )
-        return render_template('cliente/register.html', cliente=cliente)
-        return jsonify(cliente.to_json())
+    cliente_json = request.get_json()
     
-    if request.method == 'POST':
-        cliente = Cliente(
-            nome = request.form['nome'],
-            telefone = request.form['telefone'],
-            email = request.form['email'],
-            cpf = request.form['cpf'],
-            cep = request.form['cep']
-        )
+    cliente = Cliente(
+        nome = get_json_val(cliente_json, 'nome'),
+        telefone = get_json_val(cliente_json, 'telefone'),
+        email = get_json_val(cliente_json, 'email'),
+        cpf = get_json_val(cliente_json, 'cpf'),
+        cep = get_json_val(cliente_json, 'cep')
+    )
 
-        if Cliente.query.filter_by(cpf=cliente.cpf).first() != None:
-            result = Result(success=False, message="Já existe um cliente com este CPF")
-            return render_template('cliente/register.html', cliente=cliente, result=result.to_json())
+    result = cliente.is_valid()
+    if not result.success:
+        return jsonify(result.to_json())
 
-        if len(cliente.cpf) > 11:
-            result = Result(success=False, message="CPF inválido")
-            return render_template('cliente/register.html', cliente=cliente, result=result.to_json())
+    cliente_validate = validate_cliente(cliente)    
+    if not cliente_validate.success:
+        return jsonify(cliente_validate.to_json())
 
-        elif len(cliente.cpf) < 11:
-            result = Result(success=False, message="CPF inválido")
-            return render_template('cliente/register.html', cliente=cliente, result=result.to_json())
-
-        result = cliente.is_valid()
-        if result.success:
-            db.session.add(cliente)
-            db.session.commit()
-            result.message = "Cliente cadastrado com sucesso!"
-            session["cliente_result"] = result.to_json()
-            return redirect(url_for('cliente.index'))
-        
-        return render_template('cliente/register.html', cliente=cliente, result=result.to_json())
-
-@cliente.route('<int:id>/update', methods=['GET', 'POST'])
-def update(id):
-    cliente = Cliente.query.all()
-    cliente_atual: Cliente = Cliente.get_or_404(id)
-    if request.method == 'GET':
-        return render_template('cliente/update.html', cliente=cliente_atual)
-    else:
-        cliente = Cliente(
-            nome = request.form['nome'],
-            telefone = request.form['telefone'],
-            email = request.form['email'],
-            cpf = request.form['cpf'],
-            cep = request.form['cep']
-        )
-
-        cliente_atual.fill_update(cliente)
-        result = cliente_atual.is_valid()
-
-        if result.success:
-            db.session.commit()
-            result.message = "Cliente atualizado com sucesso!"
-            session["cliente_result"] = result.to_json()
-            return redirect(url_for('cliente.index'))
-
-        return render_template('cliente/update.html', cliente=cliente_atual, result=result.to_json())
-
-
-@cliente.route('<int:id>/delete', methods=['GET', 'POST'])
-def delete(id):
-    cliente_atual = Cliente.query.get_or_404(id)
-    db.session.add(cliente_atual)
+    db.session.add(cliente)
     db.session.commit()
-    return redirect(url_for('cliente.index'))
+    result.data = cliente
+    result.message = 'Cliente cadastrado com sucesso!'
+
+    return jsonify(result.to_json())
+
+@cliente.route('<int:id>/update', methods=['PUT'])
+def update(id):
+    cliente_atual: Cliente = Cliente.query.get(id)
+    if (not cliente_atual):
+        result = Result(success=False, message="Id invalido!")
+        return jsonify(result.to_json())
+
+    cliente_json = request.get_json()
+    cliente = Cliente(
+        nome = get_json_val(cliente_json, 'nome'),
+        telefone = get_json_val(cliente_json, 'telefone'),
+        email = get_json_val(cliente_json, 'email'),
+        cpf = get_json_val(cliente_json, 'cpf'),
+        cep = get_json_val(cliente_json, 'cep')
+    )
+
+    cliente_atual.fill_update(cliente)
+    result = cliente_atual.is_valid()
+    if not result.success:
+        return jsonify(result.to_json())
+
+    cliente_validate = validate_cliente_update(cliente_atual)    
+    if not cliente_validate.success:
+        return jsonify(cliente_validate.to_json())
+
+    db.session.commit()
+    result.message = 'Cliente atualizado com sucesso!'
+    result.data = cliente_atual
+
+    return jsonify(result.to_json())
+
+
+@cliente.route('<int:id>/delete', methods=['DELETE'])
+def delete(id):
+    cliente_atual: Cliente = Cliente.query.get(id)
+    if (not cliente_atual or cliente_atual.ativo == False):
+        result = Result(success=False, message="Id invalido!")
+        return jsonify(result.to_json())
+
+    cliente_atual.ativo = False
+    db.session.commit()
+    result = Result(success=True, message="Cliente deletado com sucesso!")
+    return jsonify(result.to_json())
+
+
+def validate_cliente(cliente: Cliente) -> Result:
+    if Cliente.query.filter_by(cpf=cliente.cpf).first() != None:
+        return Result(success=False, message="Já existe um cliente com este CPF")
+
+    if Cliente.query.filter_by(email=cliente.email).first() != None:
+        return Result(success=False, message="Já existe um cliente com este email")
+
+    return Result(success=True)
+
+def validate_cliente_update(cliente: Cliente) -> Result:
+    if Cliente.query.filter_by(cpf=cliente.cpf).filter(Cliente.id != cliente.id).first() != None:
+        return Result(success=False, message="Já existe um cliente com este CPF")
+
+    if Cliente.query.filter_by(email=cliente.email).filter(Cliente.id != cliente.id).first() != None:
+        return Result(success=False, message="Já existe um cliente com este email")
+
+    return Result(success=True)

@@ -1,88 +1,92 @@
-from statistics import quantiles
-from unicodedata import category
-from flask import Blueprint, redirect, render_template, request, url_for, session
+from flask import Blueprint, jsonify, request
 from model.categoria import Categoria
 from model.produto import Produto
 from extensions.extensions import db
+from model.shared.result import Result
+from utils import get_json_val
 
 produto = Blueprint('produto', __name__, template_folder="../view", url_prefix="/produto")
 
 @produto.route('/')
 def index():
-    result = None
-    if session.get("produto_result") != None:
-        result = session["produto_result"]
-        session.pop("produto_result")
-    produtos = Produto.query.all()
-    return render_template('produto/index.html', produtos=produtos, result = result)
+    produtos = Produto.query.filter(Produto.ativo==True).all()
+    result = Result(success=True, data=produtos).to_json()
+    return jsonify(result)
 
-@produto.route('/register', methods=['GET', 'POST'])
+@produto.route('/register', methods=['POST'])
 def register():
-    categorias = Categoria.query.all()
-    if request.method == 'GET':                
-        produto=Produto(
-            marca = '',
-            modelo = '',
-            preco  = None,
-            quantidade = None,
-            tamanho = None,
-            descricao = '',
-            categoria_codigo = None
-        )
-        return render_template('produto/register.html', produto=produto, categorias=categorias)
+    produto_json = request.get_json()
+    produto = Produto(
+        marca = get_json_val(produto_json, 'marca'),
+        modelo = get_json_val(produto_json, 'modelo'),
+        preco = get_json_val(produto_json, 'preco'),
+        quantidade = get_json_val(produto_json, 'quantidade'),
+        tamanho = get_json_val(produto_json, 'tamanho'),
+        descricao = get_json_val(produto_json, 'descricao'),
+        categoria_codigo = get_json_val(produto_json, 'categoria_codigo')
+    )
 
-    if request.method == 'POST':                
-        produto = Produto(
-            marca = request.form['marca'],
-            modelo = request.form['modelo'],
-            preco = request.form['preco'],
-            quantidade = request.form['quantidade'],
-            tamanho = request.form['tamanho'],
-            descricao = request.form['descricao'],
-            categoria_codigo = request.form['categoria_codigo']
-        )
+    result = produto.is_valid()        
+    if not result.success: 
+        return jsonify(result.to_json())
 
-        result = produto.is_valid()        
-        if result.success: 
-            db.session.add(produto)
-            db.session.commit()
-            result.message = "Produto cadastrado com sucesso!"
-            session["produto_result"] = result.to_json()
-            return redirect(url_for('produto.index'))
+    produto_validate = validate_produto(produto)
+    if (not produto_validate.success):
+        return jsonify(produto_validate.to_json())
 
-        return render_template('produto/register.html', produto=produto, categorias=categorias, result=result.to_json())
-
-@produto.route("<int:id>/update", methods=['GET', 'POST'])
-def update(id):
-    categorias = Categoria.query.all()
-    produto_atual: Produto = Produto.query.get_or_404(id)
-    if request.method == 'GET':
-        return render_template('produto/update.html', produto=produto_atual, categorias=categorias)
-    else:
-        produto = Produto(
-            marca = request.form['marca'],
-            modelo = request.form['modelo'],
-            preco = request.form['preco'],
-            quantidade = request.form['quantidade'],
-            tamanho = request.form['tamanho'],
-            descricao = request.form['descricao'],
-            categoria_codigo = request.form['categoria_codigo']
-        )
-        
-        produto_atual.fill_update(produto)
-        result = produto_atual.is_valid()
-
-        if result.success:
-            db.session.commit()
-            result.message = "Produto atualizado com sucesso!"
-            session["produto_result"] = result.to_json()
-            return redirect(url_for('produto.index'))
-
-        return render_template('produto/update.html', produto=produto, categorias=categorias, result=result.to_json())
-        
-@produto.route("<int:id>/delete", methods=['GET'])
-def delete(id):
-    produto_atual = Produto.query.get_or_404(id)
-    db.session.delete(produto_atual)
+    db.session.add(produto)
     db.session.commit()
-    return redirect(url_for('produto.index'))
+    result.data = produto
+    result.message = "Produto cadastrado com sucesso!"
+
+    return jsonify(result.to_json())
+
+@produto.route("<int:id>/update", methods=['PUT'])
+def update(id):
+    produto_atual: Produto = Produto.query.get(id)
+    if (not produto_atual):
+        result = Result(success=False, message="Id invalido!")
+        return jsonify(result.to_json())
+
+    produto_json = request.get_json()
+    produto = Produto(
+        marca = get_json_val(produto_json, 'marca'),
+        modelo = get_json_val(produto_json, 'modelo'),
+        preco = get_json_val(produto_json, 'preco'),
+        quantidade = get_json_val(produto_json, 'quantidade'),
+        tamanho = get_json_val(produto_json, 'tamanho'),
+        descricao = get_json_val(produto_json, 'descricao'),
+        categoria_codigo = get_json_val(produto_json, 'categoria_codigo')
+    )
+    produto_atual.fill_update(produto)
+
+    produto_validate = validate_produto(produto_atual)
+    if (not produto_validate.success):
+        return jsonify(produto_validate.to_json())
+
+    result = produto_atual.is_valid()
+
+    if result.success:
+        db.session.commit()
+        result.message = 'Produto atualizado com sucesso!'
+        result.data = produto_atual
+
+    return jsonify(result.to_json())
+        
+@produto.route("<int:id>/delete", methods=['DELETE'])
+def delete(id):
+    produto_atual: Produto = Produto.query.get(id)
+    if (not produto_atual or produto_atual.ativo == False):
+        result = Result(success=False, message="Id invalido!")
+        return jsonify(result.to_json())
+
+    produto_atual.ativo = False
+    db.session.commit()
+    result = Result(success=True, message="Produto deletado com sucesso!")
+    return jsonify(result.to_json())
+
+def validate_produto(produto: Produto) -> Result:
+    if Categoria.query.filter_by(codigo=produto.categoria_codigo, ativo=True).first() == None:
+        return Result(success=False, message="Codigo de categoria invalido!")
+
+    return Result(success=True)

@@ -1,4 +1,3 @@
-import json
 from flask import Blueprint, jsonify, request
 from extensions.extensions import db
 from model.categoria import Categoria

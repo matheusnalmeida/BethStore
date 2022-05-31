@@ -1,6 +1,5 @@
 from config import DefaultConfig
 from flask import Flask, render_template
-from controller.homepage_controller import homepage
 from controller.produto_controller import produto
 from controller.categoria_controller import categoria
 from controller.cliente_controller import cliente
@@ -28,15 +27,13 @@ def init_db(app):
             db.session.add(CategoriaVestuario)
             db.session.commit()
 
-# Home Page Controller
-app.register_blueprint(homepage)
 # Produto Controller
 app.register_blueprint(produto)
 # Categoria Controller
 app.register_blueprint(categoria)
 # Categoria cliente
 app.register_blueprint(cliente)
-init_db(app);
+init_db(app)
 
 # App 404 error handler
 @app.errorhandler(404)
