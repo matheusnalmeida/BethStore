@@ -63,7 +63,6 @@ const ClienteHome = () => {
                                 <TableCell align="center">{"TODO"}</TableCell>
                                 <TableCell align="center">{"TODO"}</TableCell>
                                 <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>                                
                                 <TableCell align="center">
                                     <IconButton
                                         variant="contained"
