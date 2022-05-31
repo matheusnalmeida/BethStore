@@ -9,6 +9,7 @@ class Categoria(db.Model):
     codigo = Column(db.Integer, primary_key=True)
     descricao = Column(db.String(50), nullable=False)
     setor = Column(db.String(50), nullable=False)
+    ativo = Column(db.Boolean, default=True, nullable=False)
 
     def is_valid(self) -> Result:
         if (

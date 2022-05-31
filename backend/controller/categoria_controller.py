@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, jsonify, redirect, render_template, request, url_for, session
+from flask import Blueprint, jsonify, request
 from extensions.extensions import db
 from model.categoria import Categoria
 from model.shared.result import Result
@@ -9,7 +9,7 @@ categoria = Blueprint('categoria', __name__, template_folder="../view", url_pref
 
 @categoria.route('/')
 def index():    
-    categorias = Categoria.query.all()
+    categorias = Categoria.query.filter(Categoria.ativo==True).all()
     result = Result(success=True, data=categorias).to_json()
     return jsonify(result)
 
@@ -20,32 +20,47 @@ def register():
         descricao = get_json_val(categoria_json, 'descricao'),
         setor = get_json_val(categoria_json, 'setor')
     )
-    return categoria_json
 
-@categoria.route('<int:id>/update', methods=['GET', 'POST'])
+    result = categoria.is_valid()
+    if result.success:
+        db.session.add(categoria)
+        db.session.commit()
+        result.data = categoria
+        result.message = 'Categoria cadastrada com sucesso!'
+        
+    return jsonify(result.to_json())
+
+@categoria.route('<int:id>/update', methods=['PUT'])
 def update(id):
-    categoria_atual: Categoria = Categoria.query.get_or_404(id)
-    if request.method == 'GET':
-        return render_template('categoria/update.html', categoria=categoria_atual)
-    else:
-        categoria = Categoria(
-            descricao = request.form['descricao'],
-            setor = request.form['setor']
-        )
+    categoria_atual: Categoria = Categoria.query.get(id)
+    if (not categoria_atual):
+        result = Result(success=False, message="Id de categoria invalido!")
+        return jsonify(result.to_json())
 
-        categoria_atual.fill_update(categoria)
-        result = categoria_atual.is_valid()
+    categoria_json = request.get_json()
+    categoria = Categoria(        
+        descricao = get_json_val(categoria_json, 'descricao'),
+        setor = get_json_val(categoria_json, 'setor')
+    )
 
-        if result.success:
-            db.session.commit()
-            result.message = 'Categoria atualizada com sucesso!'
-            session['categoria_result'] = result.to_json()
-            return redirect(url_for('categoria.index'))
-        return render_template('categoria/update.html', categoria=categoria_atual, result=result.to_json())
+    categoria_atual.fill_update(categoria)
+    result = categoria_atual.is_valid()
 
-@categoria.route("<int:id>/delete", methods=['GET'])
+    if result.success:
+        db.session.commit()
+        result.message = 'Categoria atualizada com sucesso!'
+        result.data = categoria_atual
+
+    return jsonify(result.to_json())
+
+@categoria.route("<int:id>/delete", methods=['DELETE'])
 def delete(id):
-    categoria_atual = Categoria.query.get_or_404(id)
-    db.session.delete(categoria_atual)
+    categoria_atual: Categoria = Categoria.query.get(id)
+    if (not categoria_atual or categoria_atual.ativo == False):
+        result = Result(success=False, message="Id de categoria invalido!")
+        return jsonify(result.to_json())
+
+    categoria_atual.ativo = False
     db.session.commit()
-    return redirect(url_for('categoria.index'))
+    result = Result(success=True, message="Categoria deletada com sucesso!")
+    return jsonify(result.to_json())

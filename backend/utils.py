@@ -7,4 +7,4 @@ def del_none(d):
     return d
 
 def get_json_val(json, property):
-    return json[property] if property in json else '',
+    return json[property] if property in json else ''

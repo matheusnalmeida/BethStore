@@ -16,7 +16,7 @@ class Result:
             json_data = [data.to_json() for data in self.data]
         elif callable(to_json_func):
             json_data = self.data.to_json()
-        elif type(self.data) == list:
+        else:
             json_data = self.model_to_json(self.data)
 
         json = {
@@ -33,4 +33,7 @@ class Result:
         if (type(data) == list):
             return [self.model_to_json(act_data) for act_data in data]
         else:    
-            return {c.name: getattr(data, c.name) for c in data.__table__.columns}
+            try:
+                return {c.name: getattr(data, c.name) for c in data.__table__.columns} # Default sql alchemy mapping
+            except:
+                return data
