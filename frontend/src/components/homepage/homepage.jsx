@@ -19,8 +19,8 @@ const Home = () => {
                         </a>
                     </Button>
                     <Button variant="contained">
-                        <a className="btn-primary" href="{{ url_for('categoria.index') }}">
-                            Gerenciar categorias
+                        <a className="btn-primary">
+                            <Link to="/categoria/index">Gerenciar Categorias</Link>
                         </a>
                     </Button>
                     <Button variant="contained">

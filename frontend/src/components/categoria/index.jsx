@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../styles/categoria/categoria.css';
 
-const  IndexC = () => {
+const  Index = () => {
 
     return (
         <div className="container">
@@ -36,4 +36,4 @@ const  IndexC = () => {
     );
 }
 
-export default IndexC;
+export default Index;
