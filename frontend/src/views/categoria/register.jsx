@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../styles/categoria/categoria.css';
 
-const Register = () => {
+const CategoriaRegister = () => {
 
     return (
         
@@ -25,4 +25,4 @@ const Register = () => {
     );
 }
 
-export default Register;
+export default CategoriaRegister;

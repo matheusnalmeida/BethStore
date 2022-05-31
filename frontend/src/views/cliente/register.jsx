@@ -1,7 +1,7 @@
 import React from "react";
 import "../../styles/cliente/index.css";
 
-const Register = () => {
+const ClienteRegister = () => {
     return (
         <div className="container">
             <form action="#" method="post">
@@ -35,4 +35,4 @@ const Register = () => {
     );
 }
 
-export default Register;
+export default ClienteRegister;

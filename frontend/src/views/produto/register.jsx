@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../styles/produto/index.css';
 
-const Register = () => {
+const ProdutoRegister = () => {
     return (
         <div className="container">
             <form action="#" method="post">
@@ -52,4 +52,4 @@ const Register = () => {
     );
 }
 
-export default Register;
+export default ProdutoRegister;
