@@ -13,6 +13,7 @@ import ProdutoRegister from './views/produto/register.jsx';
 import CategoriaRegister from './views/categoria/register.jsx';
 import Carrinho from './views/carrinho/carrinho.jsx';
 import CategoriaUpdate from './views/categoria/update.jsx';
+import ClienteUpdate from './views/cliente/update.jsx';
 
 
 const App = () => {
@@ -25,11 +26,11 @@ const App = () => {
                     {/* Cliente */}
                     <Route path="/cliente" element={<ClienteHome />} />
                     <Route path="/cliente/register" element={<ClienteRegister />} />
-                    <Route path="/cliente/update" element={<></>} />
+                    <Route path="/cliente/update/:id" element={<ClienteUpdate />} />
                     {/* Produto */}
                     <Route path="/produto" element={<ProdutoHome />} />
                     <Route path="/produto/register" element={<ProdutoRegister />} />
-                    <Route path="/produto/update" element={<></>} />
+                    <Route path="/produto/update/:id" element={<></>} />
                     {/* Categoria */}
                     <Route path="/categoria" element={<CategoriaHome />} />
                     <Route path="/categoria/register" element={<CategoriaRegister />} />

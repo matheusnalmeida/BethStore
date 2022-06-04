@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../styles/produto/index.css';
 
 const ProdutoRegister = () => {
     return (

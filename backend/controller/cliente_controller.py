@@ -1,3 +1,4 @@
+from multiprocessing.connection import Client
 from flask import Blueprint, request, jsonify
 from sqlalchemy import true
 from model.cliente import Cliente
@@ -11,6 +12,16 @@ cliente = Blueprint('cliente', __name__, template_folder="../view", url_prefix="
 def index():
     clientes = Cliente.query.filter(Cliente.ativo==True).all()
     result = Result(success=True, data=clientes).to_json()
+    return jsonify(result)
+
+@cliente.route('/<int:id>')
+def get_by_id(id):    
+    cliente_atual: Client = Cliente.query.get(id)
+    if (not cliente_atual):
+        result = Result(success=False, message="Id de cliente invalido!")
+        return jsonify(result.to_json())
+
+    result = Result(success=True, data=cliente_atual).to_json()
     return jsonify(result)
 
 @cliente.route('/register', methods=['POST'])

@@ -1,18 +1,44 @@
 import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/categoria/categoria.css';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';
 import ClienteService from '../../services/cliente.service'
+import { showConfirmationDialog } from '../../utils/dialog.utils';
+import { showErrorMessage, showSuccessMessage } from '../../utils/toast.utils';
 
 const ClienteHome = () => {
+    const [clientes, setClientes] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        ClienteService.GetAllClientes();
+        fetchClientes();
     }, []);
+
+    const fetchClientes = () => {
+        ClienteService.GetAllClientes().then((result) => {
+            setClientes(result.data)
+        });
+    }
+
+    const deleteCliente = (codigo) => {
+        ClienteService.DeleteCliente(codigo).then((result) => {
+            if (result.success) {
+                showSuccessMessage(result.message)
+                fetchClientes()
+                return;
+            }
+            showErrorMessage(result.message)
+        });
+    }
+
+    const confirmClienteDelete = (codigo) => {
+        showConfirmationDialog(
+            "Deletar Cliente",
+            "Deseja realmente deletar o cliente?",
+            () => deleteCliente(codigo));
+    }
 
     const navigateTo = (path) => {
         navigate(path)
@@ -36,6 +62,7 @@ const ClienteHome = () => {
                         variant="contained"
                         color="success"
                         size="small"
+                        onClick={() => navigateTo("register")}
                         sx={{
                             color: 'white'
                         }}>
@@ -55,37 +82,43 @@ const ClienteHome = () => {
                                 <TableCell align="center">Email</TableCell>
                                 <TableCell align="center">CPF</TableCell>
                                 <TableCell align="center">CEP</TableCell>
-                                <TableCell align="center">Ações</TableCell>                            
+                                <TableCell align="center">Ações</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow
-                                key={"row"}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">
-                                    <IconButton
-                                        variant="contained"
-                                        sx={{
-                                            color: 'yellow'
-                                        }}
-                                        onClick={() => navigateTo('update')}>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        sx={{
-                                            color: 'red'
-                                        }}
-                                        onClick={() => console.log('TODO DELETE')}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
+                        {
+                                clientes.map((cliente, index) => {
+                                    return (
+                                        <TableRow
+                                            key={index}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell align="center">{cliente.nome}</TableCell>
+                                            <TableCell align="center">{cliente.telefone}</TableCell>
+                                            <TableCell align="center">{cliente.email}</TableCell>
+                                            <TableCell align="center">{cliente.cpf}</TableCell>
+                                            <TableCell align="center">{cliente.cep}</TableCell>
+                                            <TableCell align="center">
+                                                <IconButton
+                                                    variant="contained"
+                                                    sx={{
+                                                        color: 'yellow'
+                                                    }}
+                                                    onClick={() => navigateTo(`update/${cliente.id}`)}>
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    sx={{
+                                                        color: 'red'
+                                                    }}
+                                                    onClick={() => confirmClienteDelete(cliente.id)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }
                         </TableBody>
                     </Table>
                 </TableContainer>

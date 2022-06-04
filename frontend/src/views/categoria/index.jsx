@@ -1,7 +1,6 @@
 import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { React, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/categoria/categoria.css';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';

@@ -1,7 +1,6 @@
 import { React, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import CategoriaService from '../../services/categoria.service';
-import '../../styles/categoria/categoria.css';
 import { showErrorMessage } from '../../utils/toast.utils';
 import CategoriaForm from './common/categoria-form';
 import CustomCircularProgress from '../../components/CustomCircularProgress';
