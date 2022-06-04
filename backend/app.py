@@ -6,8 +6,10 @@ from controller.cliente_controller import cliente
 from extensions.extensions import db
 from model.categoria import Categoria
 from constants import CategoriaBeleza, CategoriaCama, CategoriaDecoracao, CategoriaVestuario
+from flask_cors import CORS
 
 app = Flask(__name__, template_folder='view')
+CORS(app,supports_credentials=True)
 
 # Load app config
 app.config.from_object(DefaultConfig)
