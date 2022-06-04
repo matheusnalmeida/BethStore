@@ -13,6 +13,16 @@ def index():
     result = Result(success=True, data=produtos).to_json()
     return jsonify(result)
 
+@produto.route('/<int:id>')
+def get_by_id(id):    
+    cliente_atual: Produto = Produto.query.get(id)
+    if (not cliente_atual):
+        result = Result(success=False, message="Id de produto invalido!")
+        return jsonify(result.to_json())
+
+    result = Result(success=True, data=cliente_atual).to_json()
+    return jsonify(result)
+
 @produto.route('/register', methods=['POST'])
 def register():
     produto_json = request.get_json()

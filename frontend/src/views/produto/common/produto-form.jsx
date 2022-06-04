@@ -1,35 +1,43 @@
-import { Button, Grid, InputLabel, TextField } from '@mui/material';
+import { Button, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { Box, Container } from '@mui/system';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Cliente from '../../../models/cliente';
-import ClienteService from '../../../services/cliente.service';
+import Produto from '../../../models/produto';
+import CategoriaService from '../../../services/categoria.service';
+import ProdutoService from '../../../services/produto.service';
 import { showErrorMessage, showSuccessMessage } from '../../../utils/toast.utils';
 
-const ClienteForm = ({
+const ProdutoForm = ({
     isEdit = false,
-    clienteProp = Cliente(),
-    }) => {
+    produtoProp = Produto(),
+}) => {
 
     const navigate = useNavigate();
-    const [cliente, setCliente] = useState(clienteProp)
+    const [categorias, setCategorias] = useState([])
+    const [produto, setProduto] = useState(produtoProp)
+
+    useEffect(() => {
+        CategoriaService.GetAllCategorias().then((result) => {
+            setCategorias(result.data)
+        });
+    }, [])
 
     const handleFormChange = (evt) => {
-        setCliente(prevCliente => {
+        setProduto(prevProduto => {
             return {
-                ...prevCliente,
+                ...prevProduto,
                 [evt.target.name]: evt.target.value,
             }
         })
     }
 
     const handleBack = () => {
-        navigate('/cliente')
+        navigate('/produto')
     }
 
-    const CreateCliente = () => {
-        ClienteService.CreateCliente(cliente).then((result) => {
-            if (result.success){
+    const CreateProduto = () => {
+        ProdutoService.CreateProduto(produto).then((result) => {
+            if (result.success) {
                 showSuccessMessage(result.message)
                 handleBack();
                 return;
@@ -38,9 +46,9 @@ const ClienteForm = ({
         });
     }
 
-    const UpdateCliente = () => {
-        ClienteService.UpdateCliente(cliente.id, cliente).then((result) => {
-            if (result.success){
+    const UpdateProduto = () => {
+        ProdutoService.UpdateProduto(produto.codigo, produto).then((result) => {
+            if (result.success) {
                 showSuccessMessage(result.message)
                 handleBack();
                 return;
@@ -51,20 +59,22 @@ const ClienteForm = ({
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        if (isEdit){
-            UpdateCliente();
-        }else{
-            CreateCliente();
+        if (isEdit) {
+            UpdateProduto();
+        } else {
+            CreateProduto();
         }
     }
 
     const formFilled = () => {
         return (
-            !!cliente.cpf &&
-            !!cliente.cep &&
-            !!cliente.email &&
-            !!cliente.nome &&
-            !!cliente.telefone
+            !!produto.categoria_codigo &&
+            !!produto.descricao &&
+            !!produto.marca &&
+            !!produto.modelo &&
+            !!produto.preco &&
+            !!produto.quantidade &&
+            !!produto.tamanho
         );
     }
 
@@ -75,7 +85,7 @@ const ClienteForm = ({
                 noValidate
                 onSubmit={handleSubmit}
                 sx={{
-                    mt: 20,
+                    mt: 15,
                 }}
             >
                 <Grid
@@ -98,15 +108,15 @@ const ClienteForm = ({
                                 paddingBottom: 1,
                             }}
                         >
-                            CPF
+                            Descrição
                         </InputLabel>
                         <TextField
-                            id="cpf"
-                            name="cpf"
+                            id="descricao"
+                            name="descricao"
                             variant="outlined"
                             fullWidth
                             autoComplete='off'
-                            value={cliente.cpf}
+                            value={produto.descricao}
                             onChange={handleFormChange} />
                     </Grid>
                     <Grid
@@ -122,16 +132,83 @@ const ClienteForm = ({
                                 paddingBottom: 1,
                             }}
                         >
-                            CEP
+                            Marca
                         </InputLabel>
                         <TextField
-                            id="cep"
-                            name="cep"
+                            id="marca"
+                            name="marca"
                             variant="outlined"
                             fullWidth
                             autoComplete='off'
-                            value={cliente.cep}
+                            value={produto.marca}
                             onChange={handleFormChange} />
+                    </Grid>
+                </Grid>
+                <Grid
+                    container
+                    spacing={0}
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                    }}>
+                    <Grid
+                        item
+                        sx={{
+                            padding: 3
+                        }}
+                        xs={6}
+                    >
+                        <InputLabel
+                            sx={{
+                                color: "black",
+                                paddingBottom: 1,
+                            }}
+                        >
+                            Modelo
+                        </InputLabel>
+                        <TextField
+                            id="modelo"
+                            name="modelo"
+                            variant="outlined"
+                            fullWidth
+                            autoComplete='off'
+                            value={produto.modelo}
+                            onChange={handleFormChange} />
+                    </Grid>
+                    <Grid
+                        item
+                        sx={{
+                            padding: 3
+                        }}
+                        xs={6}
+                    >
+                        <InputLabel
+                            sx={{
+                                color: "black",
+                                paddingBottom: 1,
+                            }}
+                        >
+                            Categoria
+                        </InputLabel>
+                        <Select
+                            id="categoria_codigo"
+                            name="categoria_codigo"
+                            value={produto.categoria_codigo}
+                            onChange={handleFormChange}
+                            defaultValue={''}
+                            fullWidth
+                        >
+                            <MenuItem value={''} disabled></MenuItem>
+                            {categorias.map(categoria => {
+                                return (
+                                    <MenuItem 
+                                        key={categoria.codigo}
+                                        value={categoria.codigo}>
+                                        {categoria.descricao}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
                     </Grid>
                 </Grid>
                 <Grid
@@ -154,16 +231,17 @@ const ClienteForm = ({
                                 paddingBottom: 1,
                             }}
                         >
-                            Email
+                            Preço
                         </InputLabel>
                         <TextField
-                            id="email"
-                            name="email"
+                            id="preco"
+                            name="preco"
                             variant="outlined"
                             fullWidth
                             autoComplete='off'
-                            value={cliente.email}
-                            onChange={handleFormChange} />
+                            value={produto.preco}
+                            onChange={handleFormChange}
+                            type="number" />
                     </Grid>
                     <Grid
                         item
@@ -178,16 +256,17 @@ const ClienteForm = ({
                                 paddingBottom: 1,
                             }}
                         >
-                            Nome
+                            Quantidade
                         </InputLabel>
                         <TextField
-                            id="nome"
-                            name="nome"
+                            id="quantidade"
+                            name="quantidade"
                             variant="outlined"
                             fullWidth
                             autoComplete='off'
-                            value={cliente.nome}
-                            onChange={handleFormChange} />
+                            value={produto.quantidade}
+                            onChange={handleFormChange}
+                            type="number" />
                     </Grid>
                     <Grid
                         item
@@ -202,16 +281,17 @@ const ClienteForm = ({
                                 paddingBottom: 1,
                             }}
                         >
-                            Telefone
+                            Tamanho
                         </InputLabel>
                         <TextField
-                            id="telefone"
-                            name="telefone"
+                            id="tamanho"
+                            name="tamanho"
                             variant="outlined"
                             fullWidth
                             autoComplete='off'
-                            value={cliente.telefone}
-                            onChange={handleFormChange} />
+                            value={produto.tamanho}
+                            onChange={handleFormChange}
+                            type="number" />
                     </Grid>
                 </Grid>
                 <Grid
@@ -239,7 +319,7 @@ const ClienteForm = ({
                                 marginLeft: '15px'
                             }}
                             disabled={!formFilled()}
-                            >
+                        >
                             {isEdit ? "Editar" : "Cadastrar"}
                         </Button>
                         <Button
@@ -263,4 +343,4 @@ const ClienteForm = ({
     );
 }
 
-export default ClienteForm;
+export default ProdutoForm;

@@ -20,3 +20,15 @@ export const DELETE_CLIENTE = (id) => `/cliente/${id}/delete`
 export const REGISTER_CLIENTE = '/cliente/register'
 
 export const UPDATE_CLIENTE = (id) => `/cliente/${id}/update`
+
+// CLIENTES
+
+export const GET_PRODUTOS = '/produto'
+
+export const GET_PRODUTO = (id) => `/produto/${id}`
+
+export const DELETE_PRODUTO = (id) => `/produto/${id}/delete`
+
+export const REGISTER_PRODUTO = '/produto/register'
+
+export const UPDATE_PRODUTO = (id) => `/produto/${id}/update`

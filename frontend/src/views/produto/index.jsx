@@ -1,12 +1,44 @@
 import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';
+import ProdutoService from '../../services/produto.service';
+import { showErrorMessage, showSuccessMessage } from '../../utils/toast.utils';
+import { showConfirmationDialog } from '../../utils/dialog.utils';
 
 const ProdutoHome = () => {
+    const [produtos, setProdutos] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchProdutos();
+    }, []);
+
+    const fetchProdutos = () => {
+        ProdutoService.GetAllProdutos().then((result) => {
+            setProdutos(result.data)
+        });
+    }
+
+    const deleteProduto = (codigo) => {
+        ProdutoService.DeleteProduto(codigo).then((result) => {
+            if (result.success) {
+                showSuccessMessage(result.message)
+                fetchProdutos()
+                return;
+            }
+            showErrorMessage(result.message)
+        });
+    }
+
+    const confirmProdutoDelete = (codigo) => {
+        showConfirmationDialog(
+            "Deletar Produto",
+            "Deseja realmente deletar o produto?",
+            () => deleteProduto(codigo));
+    }
 
     const navigateTo = (path) => {
         navigate(path)
@@ -30,6 +62,7 @@ const ProdutoHome = () => {
                         variant="contained"
                         color="success"
                         size="small"
+                        onClick={() => navigateTo("register")}
                         sx={{
                             color: 'white'
                         }}>
@@ -51,39 +84,45 @@ const ProdutoHome = () => {
                                 <TableCell align="center">Tamanho</TableCell>
                                 <TableCell align="center">Descrição</TableCell>
                                 <TableCell align="center">Categoria</TableCell>
-                                <TableCell align="center">Ações</TableCell>                            
+                                <TableCell align="center">Ações</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow
-                                key={"row"}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>                                
-                                <TableCell align="center">{"TODO"}</TableCell>                                                                
-                                <TableCell align="center">
-                                    <IconButton
-                                        variant="contained"
-                                        sx={{
-                                            color: 'yellow'
-                                        }}
-                                        onClick={() => navigateTo('update')}>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        sx={{
-                                            color: 'red'
-                                        }}
-                                        onClick={() => console.log('TODO DELETE')}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
+                            {
+                                produtos.map((produto, index) => {
+                                    return (
+                                        <TableRow
+                                            key={index}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell align="center">{produto.marca}</TableCell>
+                                            <TableCell align="center">{produto.modelo}</TableCell>
+                                            <TableCell align="center">{produto.preco}</TableCell>
+                                            <TableCell align="center">{produto.quantidade}</TableCell>
+                                            <TableCell align="center">{produto.tamanho}</TableCell>
+                                            <TableCell align="center">{produto.descricao}</TableCell>
+                                            <TableCell align="center">{produto.categoria.descricao}</TableCell>
+                                            <TableCell align="center">
+                                                <IconButton
+                                                    variant="contained"
+                                                    sx={{
+                                                        color: 'yellow'
+                                                    }}
+                                                    onClick={() => navigateTo(`update/${produto.codigo}`)}>
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    sx={{
+                                                        color: 'red'
+                                                    }}
+                                                    onClick={() => confirmProdutoDelete(produto.codigo)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }
                         </TableBody>
                     </Table>
                 </TableContainer>
