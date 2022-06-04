@@ -9,7 +9,7 @@ from constants import CategoriaBeleza, CategoriaCama, CategoriaDecoracao, Catego
 from flask_cors import CORS
 
 app = Flask(__name__, template_folder='view')
-CORS(app,supports_credentials=True)
+CORS(app)
 
 # Load app config
 app.config.from_object(DefaultConfig)

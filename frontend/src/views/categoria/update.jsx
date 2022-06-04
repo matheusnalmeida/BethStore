@@ -1,27 +1,21 @@
-import React from 'react';
+import { Box, Typography } from '@mui/material';
+import { React, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import '../../styles/categoria/categoria.css';
 
-const Update = () => {
+const CategoriaUpdate = (props) => {
+    const params = useParams();
+
+    useEffect(() => {
+    }, []);
 
     return (
-        <div className="container">
-        <form action="#" method="post">
-            <div className="form-row">
-                <div className="form-group col-md-6">
-                    <label for="descricao">Descrição</label>
-                    <input type="text" className="form-control" id="descricao" name="descricao" value="{{ categoria.descricao }}"/>
-                </div>
-                <div className="form-group col-md-6">
-                    <label for="setor">Setor</label>
-                    <input type="text" className="form-control" id="setor" name="setor" value="{{ categoria.setor }}"/>
-                </div>
-            </div>
-            <div className="form-row pt-3">
-                <button type="submit" className="btn btn-primary">Atualizar</button>
-            </div>
-        </form>
-    </div>
+        <Box sx={{
+            textAlign: "center"
+        }}>
+            <Typography mt={15} variant="h4">EDIT CATEGORIA {params.id}!</Typography>
+        </Box>
     );
 }
 
-export default Update;
+export default CategoriaUpdate;

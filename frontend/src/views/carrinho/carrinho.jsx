@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';
-import ClienteService from '../../services/cliente.service'
 
 const Carrinho = () => {
     const navigate = useNavigate();

@@ -1,14 +1,46 @@
-import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import React from 'react';
+import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { React, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/categoria/categoria.css';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
 import { Box } from '@mui/system';
+import CategoriaService from '../../services/categoria.service';
+import { showConfirmationDialog } from '../../utils/dialog.utils'
+import { showErrorMessage, showSuccessMessage } from '../../utils/toast.utils';
 
 const CategoriaHome = () => {
+    const [categorias, setCategorias] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchCategorias();
+    }, []);
+
+    const fetchCategorias = () => {
+        CategoriaService.GetAllCategorias().then((result) => {
+            setCategorias(result.data)
+        });
+    }
+
+    const deleteCategoria = (codigo) => {
+        CategoriaService.DeleteCategorias(codigo).then((result) => {
+            console.log(result)
+            if (result.success){
+                showSuccessMessage(result.message)
+                fetchCategorias()
+                return;
+            }
+            showErrorMessage(result.message)
+        });
+    }
+
+    const confirmCategoriaDelete = (codigo) => {
+        showConfirmationDialog(
+            "Deletar Categoria",
+            "Deseja realmente deletar a categoria?",
+            () => deleteCategoria(codigo));
+    }
 
     const navigateTo = (path) => {
         navigate(path)
@@ -53,34 +85,40 @@ const CategoriaHome = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow
-                                key={"row"}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">{"TODO"}</TableCell>
-                                <TableCell align="center">
-                                    <IconButton
-                                        variant="contained"
-                                        sx={{
-                                            color: 'yellow'
-                                        }}
-                                        onClick={() => navigateTo('update')}>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        sx={{
-                                            color: 'red'
-                                        }}
-                                        onClick={() => console.log('TODO DELETE')}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
+                            {
+                                categorias.map((categoria, index) => {
+                                    return (
+                                        <TableRow
+                                            key={index}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell align="center">{categoria.codigo}</TableCell>
+                                            <TableCell align="center">{categoria.descricao}</TableCell>
+                                            <TableCell align="center">{categoria.setor}</TableCell>
+                                            <TableCell align="center">
+                                                <IconButton
+                                                    variant="contained"
+                                                    sx={{
+                                                        color: 'yellow'
+                                                    }}
+                                                    onClick={() => navigateTo(`update/${categoria.codigo}`)}>
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    sx={{
+                                                        color: 'red'
+                                                    }}
+                                                    onClick={() => confirmCategoriaDelete(categoria.codigo)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }
                         </TableBody>
                     </Table>
-                </TableContainer>
+                </TableContainer>                        
             </Grid>
         </Grid>
     );
