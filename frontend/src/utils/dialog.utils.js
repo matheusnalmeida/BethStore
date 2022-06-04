@@ -12,11 +12,11 @@ export const showConfirmationDialog = (
       closeOnClickOutside: false,
       buttons: [
         {
-          label: 'Yes',
+          label: 'Sim',
           onClick: () => confirmCallBack()
         },
         {
-          label: 'No',
+          label: 'Não',
           onClick: () => refuseCallBack()
         }
       ]

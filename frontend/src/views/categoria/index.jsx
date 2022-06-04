@@ -63,6 +63,7 @@ const CategoriaHome = () => {
                         variant="contained"
                         color="success"
                         size="small"
+                        onClick={() => navigateTo("register")}
                         sx={{
                             color: 'white'
                         }}>
