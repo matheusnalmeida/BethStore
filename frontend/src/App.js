@@ -8,6 +8,7 @@ import CategoriaHome from './views/categoria/index.jsx';
 import ClienteRegister from './views/cliente/register.jsx';
 import ProdutoRegister from './views/produto/register.jsx';
 import CategoriaRegister from './views/categoria/register.jsx';
+import Carrinho from './views/carrinho/carrinho.jsx';
 
 const App = () => {
     return (
@@ -27,6 +28,8 @@ const App = () => {
                 <Route path="/categoria" element={<CategoriaHome />} />
                 <Route path="/categoria/register" element={<CategoriaRegister />} />
                 <Route path="/categoria/update" element={<></>} />
+                {/* Carrinho */}
+                <Route path="/carrinho" element={<Carrinho />} />
             </Routes>
         </BrowserRouter>
     );
