@@ -1,4 +1,4 @@
-import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { React, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/categoria/categoria.css';
@@ -24,7 +24,7 @@ const CategoriaHome = () => {
     }
 
     const deleteCategoria = (codigo) => {
-        CategoriaService.DeleteCategorias(codigo).then((result) => {
+        CategoriaService.DeleteCategoria(codigo).then((result) => {
             if (result.success){
                 showSuccessMessage(result.message)
                 fetchCategorias()

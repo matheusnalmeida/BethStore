@@ -12,6 +12,16 @@ def index():
     result = Result(success=True, data=categorias).to_json()
     return jsonify(result)
 
+@categoria.route('/<int:id>')
+def get_by_id(id):    
+    categoria_atual: Categoria = Categoria.query.get(id)
+    if (not categoria_atual):
+        result = Result(success=False, message="Id de categoria invalido!")
+        return jsonify(result.to_json())
+
+    result = Result(success=True, data=categoria_atual).to_json()
+    return jsonify(result)
+
 @categoria.route('/register', methods=['POST'])
 def register():
     categoria_json = request.get_json()

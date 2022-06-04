@@ -1,20 +1,35 @@
-import { Box, Typography } from '@mui/material';
-import { React, useEffect } from 'react';
+import { React, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import CategoriaService from '../../services/categoria.service';
 import '../../styles/categoria/categoria.css';
+import { showErrorMessage } from '../../utils/toast.utils';
+import CategoriaForm from './common/categoria-form';
+import CustomCircularProgress from '../../components/CustomCircularProgress';
 
-const CategoriaUpdate = (props) => {
+const CategoriaUpdate = () => {
     const params = useParams();
+    const [categoriaFound, setCategoriaFound] = useState();
 
     useEffect(() => {
-    }, []);
+        let categoriaId = params.id;
+        CategoriaService.GetCategoria(categoriaId).then((result) => {
+            if (result.success) {
+                setCategoriaFound(result.data)
+                return;
+            }
+            showErrorMessage(result.message)
+        });
+    }, [params.id]);
 
     return (
-        <Box sx={{
-            textAlign: "center"
-        }}>
-            <Typography mt={15} variant="h4">EDIT CATEGORIA {params.id}!</Typography>
-        </Box>
+        categoriaFound
+            ?
+            <CategoriaForm
+                isEdit={true}
+                categoriaProp={categoriaFound}
+            />
+            :
+            <CustomCircularProgress />
     );
 }
 
