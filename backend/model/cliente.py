@@ -9,8 +9,8 @@ class Cliente(db.Model):
     nome = Column(db.String(250), nullable=False)
     telefone = Column(db.String(11), nullable = False)
     email = Column(db.String(250), nullable = False)
-    cpf = Column(db.String(11), nullable = False)
-    cep = Column(db.String(8), nullable = False)
+    cpf = Column(db.String(14), nullable = False)
+    cep = Column(db.String(9), nullable = False)
     ativo = Column(db.Boolean, default=True, nullable=False)
     
     def is_valid(self) -> Result:
@@ -23,7 +23,7 @@ class Cliente(db.Model):
         ):
             return Result(success= False, message="Preencha todos os campos!")
 
-        if len(self.cpf) != 11:
+        if len(self.cpf) != 14:
             return Result(success=False, message="CPF inválido")
         
         return Result(success=True)

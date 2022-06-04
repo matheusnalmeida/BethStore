@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import Produto from '../../../models/produto';
 import CategoriaService from '../../../services/categoria.service';
 import ProdutoService from '../../../services/produto.service';
+import { onlyNumberMask } from '../../../utils/mask.utils';
 import { showErrorMessage, showSuccessMessage } from '../../../utils/toast.utils';
+import CustomPriceInput from '../../../components/CustomPriceInput';
 
 const ProdutoForm = ({
     isEdit = false,
@@ -22,11 +24,13 @@ const ProdutoForm = ({
         });
     }, [])
 
-    const handleFormChange = (evt) => {
+    const handleFormChange = (evt, mask) => {
+        let value = mask 
+        && typeof(mask) === "function" ? mask(evt.target.value): evt.target.value;
         setProduto(prevProduto => {
             return {
                 ...prevProduto,
-                [evt.target.name]: evt.target.value,
+                [evt.target.name]: value,
             }
         })
     }
@@ -72,7 +76,7 @@ const ProdutoForm = ({
             !!produto.descricao &&
             !!produto.marca &&
             !!produto.modelo &&
-            !!produto.preco &&
+            !!Boolean(produto.preco) &&
             !!produto.quantidade &&
             !!produto.tamanho
         );
@@ -193,7 +197,7 @@ const ProdutoForm = ({
                         <Select
                             id="categoria_codigo"
                             name="categoria_codigo"
-                            value={produto.categoria_codigo}
+                            value={categorias.length > 0 ? produto.categoria_codigo : ''}
                             onChange={handleFormChange}
                             defaultValue={''}
                             fullWidth
@@ -233,15 +237,17 @@ const ProdutoForm = ({
                         >
                             Preço
                         </InputLabel>
-                        <TextField
-                            id="preco"
-                            name="preco"
-                            variant="outlined"
-                            fullWidth
-                            autoComplete='off'
+                        <CustomPriceInput 
                             value={produto.preco}
-                            onChange={handleFormChange}
-                            type="number" />
+                            onValueChange={handleFormChange}
+                            InputProps={{
+                                id: "preco",
+                                name: "preco"
+                            }}
+                            sx={{
+                                width: '100%'
+                            }}
+                             />
                     </Grid>
                     <Grid
                         item
@@ -265,7 +271,7 @@ const ProdutoForm = ({
                             fullWidth
                             autoComplete='off'
                             value={produto.quantidade}
-                            onChange={handleFormChange}
+                            onChange={(evt) => handleFormChange(evt, onlyNumberMask)}
                             type="number" />
                     </Grid>
                     <Grid

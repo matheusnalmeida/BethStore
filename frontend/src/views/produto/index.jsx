@@ -7,6 +7,7 @@ import { Box } from '@mui/system';
 import ProdutoService from '../../services/produto.service';
 import { showErrorMessage, showSuccessMessage } from '../../utils/toast.utils';
 import { showConfirmationDialog } from '../../utils/dialog.utils';
+import { priceMask } from '../../utils/mask.utils';
 
 const ProdutoHome = () => {
     const [produtos, setProdutos] = useState([]);
@@ -97,7 +98,7 @@ const ProdutoHome = () => {
                                         >
                                             <TableCell align="center">{produto.marca}</TableCell>
                                             <TableCell align="center">{produto.modelo}</TableCell>
-                                            <TableCell align="center">{produto.preco}</TableCell>
+                                            <TableCell align="center">{priceMask(produto.preco)}</TableCell>
                                             <TableCell align="center">{produto.quantidade}</TableCell>
                                             <TableCell align="center">{produto.tamanho}</TableCell>
                                             <TableCell align="center">{produto.descricao}</TableCell>

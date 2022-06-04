@@ -4,7 +4,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cliente from '../../../models/cliente';
 import ClienteService from '../../../services/cliente.service';
+import { cepMask, cpfMask, phoneMask } from '../../../utils/mask.utils';
 import { showErrorMessage, showSuccessMessage } from '../../../utils/toast.utils';
+import { cepValid, cpfValid, emailValid, phoneValid } from '../../../utils/validator.utils';
 
 const ClienteForm = ({
     isEdit = false,
@@ -14,11 +16,12 @@ const ClienteForm = ({
     const navigate = useNavigate();
     const [cliente, setCliente] = useState(clienteProp)
 
-    const handleFormChange = (evt) => {
+    const handleFormChange = (evt, mask) => {
+        let value = mask ? mask(evt.target.value) : evt.target.value;
         setCliente(prevCliente => {
             return {
                 ...prevCliente,
-                [evt.target.name]: evt.target.value,
+                [evt.target.name]: value,
             }
         })
     }
@@ -51,12 +54,35 @@ const ClienteForm = ({
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
+        if (!isValid()){
+            return;
+        }
         if (isEdit){
             UpdateCliente();
         }else{
             CreateCliente();
         }
     }
+
+    const isValid = () => {
+        if(!cpfValid(cliente.cpf)){
+            showErrorMessage("CPF Inválido!")
+            return false;
+        }
+        if(!cepValid(cliente.cep)){
+            showErrorMessage("CEP Inválido!")
+            return false;
+        }
+        if(!emailValid(cliente.email)){
+            showErrorMessage("Email Inválido!")
+            return false;
+        }
+        if(!phoneValid(cliente.telefone)){
+            showErrorMessage("Telefone Inválido!")
+            return false;
+        }
+        return true;
+    } 
 
     const formFilled = () => {
         return (
@@ -107,7 +133,7 @@ const ClienteForm = ({
                             fullWidth
                             autoComplete='off'
                             value={cliente.cpf}
-                            onChange={handleFormChange} />
+                            onChange={(evt) => handleFormChange(evt, cpfMask)} />
                     </Grid>
                     <Grid
                         item
@@ -131,7 +157,7 @@ const ClienteForm = ({
                             fullWidth
                             autoComplete='off'
                             value={cliente.cep}
-                            onChange={handleFormChange} />
+                            onChange={(evt) => handleFormChange(evt, cepMask)} />
                     </Grid>
                 </Grid>
                 <Grid
@@ -211,7 +237,7 @@ const ClienteForm = ({
                             fullWidth
                             autoComplete='off'
                             value={cliente.telefone}
-                            onChange={handleFormChange} />
+                            onChange={(evt) => handleFormChange(evt, phoneMask)} />
                     </Grid>
                 </Grid>
                 <Grid
