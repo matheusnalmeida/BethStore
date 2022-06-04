@@ -25,7 +25,6 @@ const CategoriaHome = () => {
 
     const deleteCategoria = (codigo) => {
         CategoriaService.DeleteCategorias(codigo).then((result) => {
-            console.log(result)
             if (result.success){
                 showSuccessMessage(result.message)
                 fetchCategorias()
