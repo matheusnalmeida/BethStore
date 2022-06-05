@@ -96,7 +96,6 @@ function ProdutoItem({
                         sx={{
                             color: 'red'
                         }}
-                        disabled={produto.quantidade === produto.estoque}
                         onClick={() => removeProduct(produto)}
                     >
                         <Tooltip
