@@ -1,4 +1,3 @@
-from multiprocessing.connection import Client
 from flask import Blueprint, request, jsonify
 from sqlalchemy import true
 from model.cliente import Cliente
@@ -16,7 +15,7 @@ def index():
 
 @cliente.route('/<int:id>')
 def get_by_id(id):    
-    cliente_atual: Client = Cliente.query.get(id)
+    cliente_atual: Cliente = Cliente.query.get(id)
     if (not cliente_atual):
         result = Result(success=False, message="Id de cliente invalido!")
         return jsonify(result.to_json())

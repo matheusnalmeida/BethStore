@@ -1,25 +1,35 @@
 import { Button, Grid, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
+import FreteService from '../../../services/frete.service';
 import { cepMask } from '../../../utils/mask.utils';
 import { showErrorMessage } from '../../../utils/toast.utils';
-import { cepValid } from '../../../utils/validator.utils';
+import { cepExists, cepValid } from '../../../utils/validator.utils';
 
 function SimularFrete() {
 
     const [cepSimular, setCepSimular] = useState('')
 
-    const simularCep = () => {
-        if (!isValid()) {
+    const simularCep = async () => {
+        if (!(await isValid())) {
             return;
         }
+
+        FreteService.CalcularFrete(cepSimular);
         console.log(cepSimular)
     }
 
-    const isValid = () => {
+    const isValid = async () => {
         if (!cepValid(cepSimular)) {
             showErrorMessage("CEP Inválido!")
             return false;
         }
+
+        let cepNaoExiste = !(await cepExists(cepSimular))
+        if(cepNaoExiste){
+            showErrorMessage("O CEP informado não existe!")
+            return false;
+        }
+
         return true;
     }
 
