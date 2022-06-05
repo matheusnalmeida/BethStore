@@ -77,6 +77,10 @@ const ProdutoForm = ({
     }
 
     const isValid = () => {
+        if (produto.tamanho < 16){
+            showErrorMessage("O tamanho minimo para o produto é 16cm!")
+            return false;
+        }
         if(isEdit){
             let productCart = 
                 cartItems.find(produtoCart => produtoCart.codigo === produto.codigo)
@@ -306,7 +310,7 @@ const ProdutoForm = ({
                                 paddingBottom: 1,
                             }}
                         >
-                            Tamanho
+                            Tamanho (cm)
                         </InputLabel>
                         <TextField
                             id="tamanho"
@@ -314,6 +318,7 @@ const ProdutoForm = ({
                             variant="outlined"
                             fullWidth
                             autoComplete='off'
+                            placeholder='Minimo: 16cm'
                             value={produto.tamanho}
                             onChange={handleFormChange}
                             type="number" />

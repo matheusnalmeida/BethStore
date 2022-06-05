@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from controller.produto_controller import produto
 from controller.categoria_controller import categoria
 from controller.cliente_controller import cliente
+from controller.frete_controller import frete
 from extensions.extensions import db
 from model.categoria import Categoria
 from constants import CategoriaBeleza, CategoriaCama, CategoriaDecoracao, CategoriaVestuario
@@ -33,8 +34,11 @@ def init_db(app):
 app.register_blueprint(produto)
 # Categoria Controller
 app.register_blueprint(categoria)
-# Categoria cliente
+# Cliente Controller
 app.register_blueprint(cliente)
+# Frete Controller
+app.register_blueprint(frete)
+
 init_db(app)
 
 # App 404 error handler

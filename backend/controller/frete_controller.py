@@ -4,38 +4,34 @@ from model.cliente import Cliente
 from extensions.extensions import db
 from model.shared.result import Result
 from utils import get_json_val
-
-from correios_frete.client import Client 
-from correios_frete.package import Package 
-from correios_frete.constants import CAIXA_PACOTE
-from correios_frete.constants import SEDEX, PAC
+from viewmodels.produto_carrinho import ProdutoCarrinho
 
 # https://github.com/adonescunha/correios-frete
 # https://github.com/Deividy/frete
 
 frete = Blueprint('frete', __name__, url_prefix="/frete")
 
-@frete.route('/calcular-frete/<str:cep>' , methods=['POST'])
+@frete.route('/calcular-frete/<cep>' , methods=['POST'])
 def calcular_frete(cep):
-    #produtos_json = request.get_json()
-    #
-    #cliente = Cliente(
-    #    nome = get_json_val(cliente_json, 'nome'),
-    #    telefone = get_json_val(cliente_json, 'telefone'),
-    #    email = get_json_val(cliente_json, 'email'),
-    #    cpf = get_json_val(cliente_json, 'cpf'),
-    #    cep = get_json_val(cliente_json, 'cep')
-    #)
-
-    client = Client(cep_origem='01310-200')
-    package = Package(formato=CAIXA_PACOTE)
-    package.add_item(
-        weight = 0.5,
-        height = 6.0,
-        width  = 16.0,
-        length = 16.0
-    )
-    servicos = client.calc_preco_prazo(package, '52020-010', SEDEX)
-
-    result = Result(success=True).to_json()
+    produtos_json = request.get_json()
+    produtos_carrinho = []
+    for produto_json in produtos_json:
+        new_produto = ProdutoCarrinho(
+            codigo = get_json_val(produto_json, 'codigo'),
+            preco = get_json_val(produto_json, 'preco'),
+            quantidade = get_json_val(produto_json, 'quantidade'),
+            tamanho = get_json_val(produto_json, 'tamanho')
+        )
+        produtos_carrinho.append(new_produto)
+    
+    frete = calcular_frete_produtos(produtos_carrinho)
+    
+    result = Result(success=True, data=frete).to_json()
     return jsonify(result)
+
+
+def calcular_frete_produtos(produtos_carrinho):
+    valor = 0
+    for produto in produtos_carrinho:
+        valor += ((produto.tamanho ** 3)/1000) * produto.quantidade
+    return valor

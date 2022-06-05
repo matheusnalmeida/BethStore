@@ -1,16 +1,15 @@
-import { Grid, IconButton, Typography } from '@mui/material'
+import { Grid, IconButton, Tooltip, Typography } from '@mui/material'
 import React from 'react'
-import Produto from '../../../../models/produto'
 import { priceMask } from '../../../../utils/mask.utils'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useCarrinho } from '../../../../hooks/useCarrinho';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function ProdutoItem({
     produto,
 }) {
-    const { decrease, increase } = useCarrinho();
-
+    const { decrease, increase, removeProduct } = useCarrinho();
 
     return (
         <Grid
@@ -64,7 +63,7 @@ function ProdutoItem({
                 </Grid>
                 <Grid
                     item
-                    mt={4}
+                    mt={2}
                     xs={12}>
 
                     <IconButton
@@ -72,7 +71,7 @@ function ProdutoItem({
                             color: (produto.quantidade > 1 ? 'orange' : 'gray')
                         }}
                         disabled={produto.quantidade === 1}
-                        onClick={()=> decrease(produto)}
+                        onClick={() => decrease(produto)}
                     >
                         <ChevronLeftIcon />
                     </IconButton>
@@ -85,14 +84,32 @@ function ProdutoItem({
                             color: (produto.quantidade !== produto.estoque ? 'orange' : 'gray')
                         }}
                         disabled={produto.quantidade === produto.estoque}
-                        onClick={()=> increase(produto)}
+                        onClick={() => increase(produto)}
                     >
                         <ChevronRightIcon />
+                    </IconButton>
+                </Grid>
+                <Grid
+                    item
+                    xs={12}>
+                    <IconButton
+                        sx={{
+                            color: 'red'
+                        }}
+                        disabled={produto.quantidade === produto.estoque}
+                        onClick={() => removeProduct(produto)}
+                    >
+                        <Tooltip
+                        title="Remover"
+                        >
+                            <DeleteIcon />
+                        </Tooltip>
                     </IconButton>
                 </Grid>
             </Grid>
             <Grid
                 item
+                textAlign={'center'}
                 xs={4}>
                 <Grid
                     item

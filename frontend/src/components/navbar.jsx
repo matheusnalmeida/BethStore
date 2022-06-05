@@ -15,6 +15,7 @@ import StoreIcon from '@mui/icons-material/Store';
 import { useNavigate } from "react-router-dom";
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import Badge from '@mui/material/Badge';
+import { useCarrinho } from '../hooks/useCarrinho';
 
 const pages = [
     {
@@ -37,6 +38,7 @@ const AppNavBar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const navigate = useNavigate();
+    const { cartItems } = useCarrinho();
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -156,7 +158,7 @@ const AppNavBar = () => {
                                         color: 'white',
                                         p: 0
                                     }}>
-                                    <Badge badgeContent={1} color="error">
+                                    <Badge badgeContent={cartItems.length} color="error">
                                         <LocalGroceryStoreIcon />
                                     </Badge>
                                 </IconButton>

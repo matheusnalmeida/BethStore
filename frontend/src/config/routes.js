@@ -36,3 +36,7 @@ export const UPDATE_PRODUTO = (id) => `/produto/${id}/update`
 // API VIACEP
 
 export const GET_CEP_INFO = (cep) => `/${cep}/json/`
+
+// FRETE 
+
+export const CALCULAR_FRETE = (cep) => `/frete/calcular-frete/${cep}`

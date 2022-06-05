@@ -1,21 +1,30 @@
 import { Button, Grid, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
+import { useCarrinho } from '../../../hooks/useCarrinho';
 import FreteService from '../../../services/frete.service';
-import { cepMask } from '../../../utils/mask.utils';
+import { cepMask, priceMask } from '../../../utils/mask.utils';
 import { showErrorMessage } from '../../../utils/toast.utils';
 import { cepExists, cepValid } from '../../../utils/validator.utils';
 
 function SimularFrete() {
-
+    const { cartItems } = useCarrinho();
     const [cepSimular, setCepSimular] = useState('')
+    const [freteSimulacaoValor, setFreteSimulacaoValor] = useState(null)
 
     const simularCep = async () => {
         if (!(await isValid())) {
+            setFreteSimulacaoValor(null)
             return;
         }
 
-        FreteService.CalcularFrete(cepSimular);
-        console.log(cepSimular)
+        FreteService.CalcularFrete(cepSimular, cartItems)
+        .then((result) => {
+            if (result.success){
+                setFreteSimulacaoValor(result.data)
+            }else{
+                setFreteSimulacaoValor(null)
+            }
+        });
     }
 
     const isValid = async () => {
@@ -35,7 +44,8 @@ function SimularFrete() {
 
     const formFilled = () => {
         return (
-            !!cepSimular
+            !!cepSimular &&
+            cartItems.length > 0
         );
     }
 
@@ -95,7 +105,10 @@ function SimularFrete() {
                     marginTop: 3
                 }}
                 xs={12}>
-                <Typography>O valor do frete é de: </Typography>
+                    {
+                        freteSimulacaoValor && 
+                        <Typography>O valor do frete é de: {priceMask(freteSimulacaoValor)}</Typography>
+                    }
             </Grid>
         </Grid>)
 }
