@@ -5,8 +5,8 @@ const Storage = (cartItems) => {
 
 export const sumItems = cartItems => {
     Storage(cartItems);
-    let itemCount = cartItems.reduce((total, product) => total + product.quantity, 0);
-    let total = cartItems.reduce((total, product) => total + product.price * product.quantity, 0).toFixed(2);
+    let itemCount = cartItems.reduce((total, product) => total + product.quantidade, 0);
+    let total = cartItems.reduce((total, product) => total + product.preco * product.quantidade, 0).toFixed(2);
     return { itemCount, total }
 }
 
@@ -16,7 +16,7 @@ export const CarrinhoReducer = (state, action) => {
             if (!state.cartItems.find(item => item.codigo === action.payload.codigo)) {
                 state.cartItems.push({
                     ...action.payload,
-                    quantity: 1
+                    quantidade: 1
                 })
             } 
 
@@ -25,6 +25,17 @@ export const CarrinhoReducer = (state, action) => {
                 ...sumItems(state.cartItems),
                 cartItems: [...state.cartItems]
             }
+        case "UPDATE_ITEM":
+            let produtoUpdateIndex = state.cartItems.findIndex(item => item.codigo === action.payload.codigo)
+            if (produtoUpdateIndex !== -1) {
+                let originalProductUpdate = state.cartItems[produtoUpdateIndex]
+                state.cartItems[produtoUpdateIndex] = {...originalProductUpdate,...action.payload}
+            } 
+            return {
+                ...state,
+                ...sumItems(state.cartItems),
+                cartItems: [...state.cartItems]
+            }            
         case "REMOVE_ITEM":
             return {
                 ...state,
@@ -32,14 +43,16 @@ export const CarrinhoReducer = (state, action) => {
                 cartItems: [...state.cartItems.filter(item => item.codigo !== action.payload.codigo)]
             }
         case "INCREASE":
-            state.cartItems[state.cartItems.findIndex(item => item.codigo === action.payload.codigo)].quantity++
+            let produtoAdd = state.cartItems[state.cartItems.findIndex(item => item.codigo === action.payload.codigo)];
+            produtoAdd.quantidade = action.payload.quantidade;
             return {
                 ...state,
                 ...sumItems(state.cartItems),
                 cartItems: [...state.cartItems]
             }
         case "DECREASE":
-            state.cartItems[state.cartItems.findIndex(item => item.codigo === action.payload.codigo)].quantity--
+            let produtoDecrease = state.cartItems[state.cartItems.findIndex(item => item.codigo === action.payload.codigo)];
+            produtoDecrease.quantidade = action.payload.quantidade;
             return {
                 ...state,
                 ...sumItems(state.cartItems),

@@ -8,6 +8,7 @@ import ProdutoService from '../../../services/produto.service';
 import { onlyNumberMask } from '../../../utils/mask.utils';
 import { showErrorMessage, showSuccessMessage } from '../../../utils/toast.utils';
 import CustomPriceInput from '../../../components/CustomPriceInput';
+import { useCarrinho } from '../../../hooks/useCarrinho';
 
 const ProdutoForm = ({
     isEdit = false,
@@ -17,6 +18,7 @@ const ProdutoForm = ({
     const navigate = useNavigate();
     const [categorias, setCategorias] = useState([])
     const [produto, setProduto] = useState(produtoProp)
+    const { cartItems, updateProduct } = useCarrinho();
 
     useEffect(() => {
         CategoriaService.GetAllCategorias().then((result) => {
@@ -54,6 +56,7 @@ const ProdutoForm = ({
         ProdutoService.UpdateProduto(produto.codigo, produto).then((result) => {
             if (result.success) {
                 showSuccessMessage(result.message)
+                updateProduct(result.data)
                 handleBack();
                 return;
             }
@@ -63,12 +66,28 @@ const ProdutoForm = ({
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
+        if (!isValid()){
+            return;
+        }
         if (isEdit) {
             UpdateProduto();
         } else {
             CreateProduto();
         }
     }
+
+    const isValid = () => {
+        if(isEdit){
+            let productCart = 
+                cartItems.find(produtoCart => produtoCart.codigo === produto.codigo)
+            if (productCart 
+                && (productCart.quantidade > produto.estoque)){
+                showErrorMessage("O produto ja está no carrinho e a sua quantidade em estoque não pode ser reduzida!")
+                return false;
+            }
+        }
+        return true;
+    } 
 
     const formFilled = () => {
         return (
@@ -77,7 +96,7 @@ const ProdutoForm = ({
             !!produto.marca &&
             !!produto.modelo &&
             !!Boolean(produto.preco) &&
-            !!produto.quantidade &&
+            !!produto.estoque &&
             !!produto.tamanho
         );
     }
@@ -262,15 +281,15 @@ const ProdutoForm = ({
                                 paddingBottom: 1,
                             }}
                         >
-                            Quantidade
+                            Estoque
                         </InputLabel>
                         <TextField
-                            id="quantidade"
-                            name="quantidade"
+                            id="estoque"
+                            name="estoque"
                             variant="outlined"
                             fullWidth
                             autoComplete='off'
-                            value={produto.quantidade}
+                            value={produto.estoque}
                             onChange={(evt) => handleFormChange(evt, onlyNumberMask)}
                             type="number" />
                     </Grid>

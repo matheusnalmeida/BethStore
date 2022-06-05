@@ -10,7 +10,7 @@ class Produto(db.Model):
     marca = Column(db.String(250), nullable = False)
     modelo = Column(db.String(250), nullable = False)
     preco = Column(db.Float, nullable=False)
-    quantidade = Column(db.Integer, nullable=False)
+    estoque = Column(db.Integer, nullable=False)
     tamanho = Column(db.Float, nullable = False)
     descricao = Column(db.String(250), nullable = False)
     categoria_codigo = db.Column(db.Integer, db.ForeignKey('categoria.codigo'), nullable=False)
@@ -28,8 +28,8 @@ class Produto(db.Model):
         ):
             return Result(success= False, message="Preencha todos os campos!")
 
-        if (not self.quantidade or int(self.quantidade) <= 0):
-            return Result(success= False, message="A quantidade de produtos em estoque inválida!")        
+        if (not self.estoque or int(self.estoque) <= 0):
+            return Result(success= False, message="A quantidade de produtos em estoque é inválida!")        
 
         return Result(success=True)            
     
@@ -37,7 +37,7 @@ class Produto(db.Model):
         self.marca = produto.marca
         self.modelo = produto.modelo        
         self.preco = produto.preco
-        self.quantidade = produto.quantidade
+        self.estoque = produto.estoque
         self.tamanho = produto.tamanho
         self.descricao = produto.descricao
         self.categoria_codigo = produto.categoria_codigo
@@ -48,7 +48,7 @@ class Produto(db.Model):
             "marca": self.marca,
             "modelo": self.modelo,
             "preco": self.preco,
-            "quantidade": self.quantidade,
+            "estoque": self.estoque,
             "tamanho": self.tamanho,
             "descricao": self.descricao,
             "ativo": self.ativo,

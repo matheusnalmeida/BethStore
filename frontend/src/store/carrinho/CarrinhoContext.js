@@ -3,7 +3,11 @@ import { CarrinhoReducer, sumItems } from './CarrinhoReducer';
 
 export const CarrinhoContext = createContext()
 
-const storage = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+const getActiveProducts = (cartItems) => {
+    return cartItems.filter(product => product.ativo)
+}
+
+const storage = localStorage.getItem('cart') ? getActiveProducts(JSON.parse(localStorage.getItem('cart'))) : [];
 const initialState = { cartItems: storage, ...sumItems(storage), checkout: false };
 
 const CarrinhoContextProvider = ({children}) => {
@@ -11,15 +15,21 @@ const CarrinhoContextProvider = ({children}) => {
     const [state, dispatch] = useReducer(CarrinhoReducer, initialState)
 
     const increase = payload => {
+        payload.quantidade++;
         dispatch({type: 'INCREASE', payload})
     }
 
     const decrease = payload => {
+        payload.quantidade--;
         dispatch({type: 'DECREASE', payload})
     }
 
     const addProduct = payload => {
         dispatch({type: 'ADD_ITEM', payload})
+    }
+
+    const updateProduct = payload => {
+        dispatch({type: 'UPDATE_ITEM', payload})
     }
 
     const removeProduct = payload => {
@@ -42,6 +52,7 @@ const CarrinhoContextProvider = ({children}) => {
     const contextValues = {
         removeProduct,
         addProduct,
+        updateProduct,
         increase,
         decrease,
         clearCart,

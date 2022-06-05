@@ -30,7 +30,7 @@ def register():
         marca = get_json_val(produto_json, 'marca'),
         modelo = get_json_val(produto_json, 'modelo'),
         preco = get_json_val(produto_json, 'preco'),
-        quantidade = get_json_val(produto_json, 'quantidade'),
+        estoque = get_json_val(produto_json, 'estoque'),
         tamanho = get_json_val(produto_json, 'tamanho'),
         descricao = get_json_val(produto_json, 'descricao'),
         categoria_codigo = get_json_val(produto_json, 'categoria_codigo')
@@ -63,7 +63,7 @@ def update(id):
         marca = get_json_val(produto_json, 'marca'),
         modelo = get_json_val(produto_json, 'modelo'),
         preco = get_json_val(produto_json, 'preco'),
-        quantidade = get_json_val(produto_json, 'quantidade'),
+        estoque = get_json_val(produto_json, 'estoque'),
         tamanho = get_json_val(produto_json, 'tamanho'),
         descricao = get_json_val(produto_json, 'descricao'),
         categoria_codigo = get_json_val(produto_json, 'categoria_codigo')

@@ -84,7 +84,7 @@ const ProdutoHome = () => {
                                 <TableCell align="center">Marca</TableCell>
                                 <TableCell align="center">Modelo</TableCell>
                                 <TableCell align="center">Preço</TableCell>
-                                <TableCell align="center">Quantidade</TableCell>
+                                <TableCell align="center">Estoque</TableCell>
                                 <TableCell align="center">Tamanho</TableCell>
                                 <TableCell align="center">Descrição</TableCell>
                                 <TableCell align="center">Categoria</TableCell>
@@ -102,7 +102,7 @@ const ProdutoHome = () => {
                                             <TableCell align="center">{produto.marca}</TableCell>
                                             <TableCell align="center">{produto.modelo}</TableCell>
                                             <TableCell align="center">{priceMask(produto.preco)}</TableCell>
-                                            <TableCell align="center">{produto.quantidade}</TableCell>
+                                            <TableCell align="center">{produto.estoque}</TableCell>
                                             <TableCell align="center">{produto.tamanho}</TableCell>
                                             <TableCell align="center">{produto.descricao}</TableCell>
                                             <TableCell align="center">{produto.categoria.descricao}</TableCell>
