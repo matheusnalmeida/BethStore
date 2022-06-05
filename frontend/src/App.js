@@ -15,31 +15,33 @@ import Carrinho from './views/carrinho/carrinho.jsx';
 import CategoriaUpdate from './views/categoria/update.jsx';
 import ClienteUpdate from './views/cliente/update.jsx';
 import ProdutoUpdate from './views/produto/update.jsx';
-
+import CarrinhoContextProvider from './store/carrinho/CarrinhoContext.js';
 
 const App = () => {
     return (
         <>
-            <BrowserRouter>
-                <AppNavBar />
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    {/* Cliente */}
-                    <Route path="/cliente" element={<ClienteHome />} />
-                    <Route path="/cliente/register" element={<ClienteRegister />} />
-                    <Route path="/cliente/update/:id" element={<ClienteUpdate />} />
-                    {/* Produto */}
-                    <Route path="/produto" element={<ProdutoHome />} />
-                    <Route path="/produto/register" element={<ProdutoRegister />} />
-                    <Route path="/produto/update/:id" element={<ProdutoUpdate />} />
-                    {/* Categoria */}
-                    <Route path="/categoria" element={<CategoriaHome />} />
-                    <Route path="/categoria/register" element={<CategoriaRegister />} />
-                    <Route path="/categoria/update/:id" element={<CategoriaUpdate />} />
-                    {/* Carrinho */}
-                    <Route path="/carrinho" element={<Carrinho />} />
-                </Routes>
-            </BrowserRouter>
+            <CarrinhoContextProvider>
+                <BrowserRouter>
+                    <AppNavBar />
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        {/* Cliente */}
+                        <Route path="/cliente" element={<ClienteHome />} />
+                        <Route path="/cliente/register" element={<ClienteRegister />} />
+                        <Route path="/cliente/update/:id" element={<ClienteUpdate />} />
+                        {/* Produto */}
+                        <Route path="/produto" element={<ProdutoHome />} />
+                        <Route path="/produto/register" element={<ProdutoRegister />} />
+                        <Route path="/produto/update/:id" element={<ProdutoUpdate />} />
+                        {/* Categoria */}
+                        <Route path="/categoria" element={<CategoriaHome />} />
+                        <Route path="/categoria/register" element={<CategoriaRegister />} />
+                        <Route path="/categoria/update/:id" element={<CategoriaUpdate />} />
+                        {/* Carrinho */}
+                        <Route path="/carrinho" element={<Carrinho />} />
+                    </Routes>
+                </BrowserRouter>
+            </CarrinhoContextProvider>
             <ToastContainer
                 theme="colored"
                 position="top-right"

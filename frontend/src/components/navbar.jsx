@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -150,7 +151,7 @@ const AppNavBar = () => {
 
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Carrinho">
-                                <IconButton onClick={() => { console.log('TODO CARRINHO'); }}
+                                <IconButton onClick={() => handlePageClick({link: '/carrinho'})}
                                     sx={{
                                         color: 'white',
                                         p: 0
