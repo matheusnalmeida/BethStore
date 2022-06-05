@@ -1,5 +1,4 @@
 export const onlyNumberMask = value => {
-    console.log(value)
     return value
       .replace(/\D/g, '')
 }

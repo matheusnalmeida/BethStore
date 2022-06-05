@@ -1,5 +1,7 @@
+import CEPService from "../services/cep.service";
+import { onlyNumberMask } from "./mask.utils";
+
 export const cpfValid = (cpf) => {
-    console.log(cpf)
     return cpf.length === 14;
 }
 
@@ -16,4 +18,11 @@ export const emailValid = (email) => {
 
 export const phoneValid = (phone) => {
     return phone.length === 14 || phone.length === 15;
+}
+
+export const cepExists = (cep) => {
+    let validCep = onlyNumberMask(cep)
+    return CEPService.GetCEPInfo(validCep).then((result) => {
+        return !result.erro
+    })
 }

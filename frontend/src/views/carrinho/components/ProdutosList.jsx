@@ -25,7 +25,7 @@ function ProdutosList() {
                 paddingTop={"30px"}
                 container>
                 <Grid
-                    container
+                    item
                     alignItems={"center"}
                     justifyContent={"center"}
                     textAlign={"center"}

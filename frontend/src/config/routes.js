@@ -32,3 +32,7 @@ export const DELETE_PRODUTO = (id) => `/produto/${id}/delete`
 export const REGISTER_PRODUTO = '/produto/register'
 
 export const UPDATE_PRODUTO = (id) => `/produto/${id}/update`
+
+// API VIACEP
+
+export const GET_CEP_INFO = (cep) => `/${cep}/json/`

@@ -6,7 +6,7 @@ import Cliente from '../../../models/cliente';
 import ClienteService from '../../../services/cliente.service';
 import { cepMask, cpfMask, phoneMask } from '../../../utils/mask.utils';
 import { showErrorMessage, showSuccessMessage } from '../../../utils/toast.utils';
-import { cepValid, cpfValid, emailValid, phoneValid } from '../../../utils/validator.utils';
+import { cepExists, cepValid, cpfValid, emailValid, phoneValid } from '../../../utils/validator.utils';
 
 const ClienteForm = ({
     isEdit = false,
@@ -52,9 +52,9 @@ const ClienteForm = ({
         });
     }
 
-    const handleSubmit = (evt) => {
+    const handleSubmit = async (evt) => {
         evt.preventDefault();
-        if (!isValid()){
+        if (!(await isValid())){
             return;
         }
         if (isEdit){
@@ -64,7 +64,7 @@ const ClienteForm = ({
         }
     }
 
-    const isValid = () => {
+    const isValid = async () => {
         if(!cpfValid(cliente.cpf)){
             showErrorMessage("CPF Inválido!")
             return false;
@@ -79,6 +79,11 @@ const ClienteForm = ({
         }
         if(!phoneValid(cliente.telefone)){
             showErrorMessage("Telefone Inválido!")
+            return false;
+        }
+        let cepNaoExiste = !(await cepExists(cliente.cep))
+        if(cepNaoExiste){
+            showErrorMessage("O CEP informado não existe!")
             return false;
         }
         return true;
