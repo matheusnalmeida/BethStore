@@ -13,7 +13,7 @@ export const sumItems = cartItems => {
 export const CarrinhoReducer = (state, action) => {
     switch (action.type) {
         case "ADD_ITEM":
-            if (!state.cartItems.find(item => item.id === action.payload.id)) {
+            if (!state.cartItems.find(item => item.codigo === action.payload.codigo)) {
                 state.cartItems.push({
                     ...action.payload,
                     quantity: 1
@@ -28,18 +28,18 @@ export const CarrinhoReducer = (state, action) => {
         case "REMOVE_ITEM":
             return {
                 ...state,
-                ...sumItems(state.cartItems.filter(item => item.id !== action.payload.id)),
-                cartItems: [...state.cartItems.filter(item => item.id !== action.payload.id)]
+                ...sumItems(state.cartItems.filter(item => item.codigo !== action.payload.codigo)),
+                cartItems: [...state.cartItems.filter(item => item.codigo !== action.payload.codigo)]
             }
         case "INCREASE":
-            state.cartItems[state.cartItems.findIndex(item => item.id === action.payload.id)].quantity++
+            state.cartItems[state.cartItems.findIndex(item => item.codigo === action.payload.codigo)].quantity++
             return {
                 ...state,
                 ...sumItems(state.cartItems),
                 cartItems: [...state.cartItems]
             }
         case "DECREASE":
-            state.cartItems[state.cartItems.findIndex(item => item.id === action.payload.id)].quantity--
+            state.cartItems[state.cartItems.findIndex(item => item.codigo === action.payload.codigo)].quantity--
             return {
                 ...state,
                 ...sumItems(state.cartItems),

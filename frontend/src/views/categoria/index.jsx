@@ -1,4 +1,4 @@
-import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 import { React, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
@@ -24,7 +24,7 @@ const CategoriaHome = () => {
 
     const deleteCategoria = (codigo) => {
         CategoriaService.DeleteCategoria(codigo).then((result) => {
-            if (result.success){
+            if (result.success) {
                 showSuccessMessage(result.message)
                 fetchCategorias()
                 return;
@@ -95,21 +95,25 @@ const CategoriaHome = () => {
                                             <TableCell align="center">{categoria.descricao}</TableCell>
                                             <TableCell align="center">{categoria.setor}</TableCell>
                                             <TableCell align="center">
-                                                <IconButton
-                                                    variant="contained"
-                                                    sx={{
-                                                        color: 'yellow'
-                                                    }}
-                                                    onClick={() => navigateTo(`update/${categoria.codigo}`)}>
-                                                    <EditIcon />
-                                                </IconButton>
-                                                <IconButton
-                                                    sx={{
-                                                        color: 'red'
-                                                    }}
-                                                    onClick={() => confirmCategoriaDelete(categoria.codigo)}>
-                                                    <DeleteIcon />
-                                                </IconButton>
+                                                <Tooltip title="Editar">
+                                                    <IconButton
+                                                        variant="contained"
+                                                        sx={{
+                                                            color: 'yellow'
+                                                        }}
+                                                        onClick={() => navigateTo(`update/${categoria.codigo}`)}>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Deletar">
+                                                    <IconButton
+                                                        sx={{
+                                                            color: 'red'
+                                                        }}
+                                                        onClick={() => confirmCategoriaDelete(categoria.codigo)}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     )
@@ -117,7 +121,7 @@ const CategoriaHome = () => {
                             }
                         </TableBody>
                     </Table>
-                </TableContainer>                        
+                </TableContainer>
             </Grid>
         </Grid>
     );

@@ -1,7 +1,7 @@
 import React, { createContext, useReducer } from 'react';
 import { CarrinhoReducer, sumItems } from './CarrinhoReducer';
 
-export const CartContext = createContext()
+export const CarrinhoContext = createContext()
 
 const storage = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
 const initialState = { cartItems: storage, ...sumItems(storage), checkout: false };
@@ -35,6 +35,10 @@ const CarrinhoContextProvider = ({children}) => {
         dispatch({type: 'CHECKOUT'})
     }
 
+    const isInCart = product => {
+        return !!state.cartItems.find(item => item.codigo === product.codigo);
+    }
+
     const contextValues = {
         removeProduct,
         addProduct,
@@ -42,13 +46,14 @@ const CarrinhoContextProvider = ({children}) => {
         decrease,
         clearCart,
         handleCheckout,
+        isInCart,
         ...state
     } 
 
     return ( 
-        <CartContext.Provider value={contextValues} >
+        <CarrinhoContext.Provider value={contextValues} >
             { children }
-        </CartContext.Provider>
+        </CarrinhoContext.Provider>
      );
 }
  

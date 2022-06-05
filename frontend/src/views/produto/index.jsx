@@ -1,4 +1,4 @@
-import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,10 +8,13 @@ import ProdutoService from '../../services/produto.service';
 import { showErrorMessage, showSuccessMessage } from '../../utils/toast.utils';
 import { showConfirmationDialog } from '../../utils/dialog.utils';
 import { priceMask } from '../../utils/mask.utils';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useCarrinho } from '../../hooks/useCarrinho';
 
 const ProdutoHome = () => {
     const [produtos, setProdutos] = useState([]);
     const navigate = useNavigate();
+    const { addProduct, isInCart } = useCarrinho();
 
     useEffect(() => {
         fetchProdutos();
@@ -104,21 +107,39 @@ const ProdutoHome = () => {
                                             <TableCell align="center">{produto.descricao}</TableCell>
                                             <TableCell align="center">{produto.categoria.descricao}</TableCell>
                                             <TableCell align="center">
-                                                <IconButton
-                                                    variant="contained"
-                                                    sx={{
-                                                        color: 'yellow'
-                                                    }}
-                                                    onClick={() => navigateTo(`update/${produto.codigo}`)}>
-                                                    <EditIcon />
-                                                </IconButton>
-                                                <IconButton
-                                                    sx={{
-                                                        color: 'red'
-                                                    }}
-                                                    onClick={() => confirmProdutoDelete(produto.codigo)}>
-                                                    <DeleteIcon />
-                                                </IconButton>
+                                                <Tooltip title="Editar">
+                                                    <IconButton
+                                                        variant="contained"
+                                                        sx={{
+                                                            color: 'yellow'
+                                                        }}
+                                                        onClick={() => navigateTo(`update/${produto.codigo}`)}>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Deletar">
+                                                    <IconButton
+                                                        sx={{
+                                                            color: 'red'
+                                                        }}
+                                                        onClick={() => confirmProdutoDelete(produto.codigo)}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                {
+                                                    <Tooltip title="Comprar">
+                                                        <span>
+                                                            <IconButton
+                                                                sx={{
+                                                                    color: isInCart(produto) ? 'gray' : 'orange'
+                                                                }}
+                                                                disabled={isInCart(produto)}
+                                                                onClick={() => addProduct(produto)}>
+                                                                <ShoppingCartIcon />
+                                                            </IconButton>
+                                                        </span>
+                                                    </Tooltip>
+                                                }
                                             </TableCell>
                                         </TableRow>
                                     )

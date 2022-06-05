@@ -1,4 +1,4 @@
-import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
@@ -86,7 +86,7 @@ const ClienteHome = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {
+                            {
                                 clientes.map((cliente, index) => {
                                     return (
                                         <TableRow
@@ -99,21 +99,25 @@ const ClienteHome = () => {
                                             <TableCell align="center">{cliente.cpf}</TableCell>
                                             <TableCell align="center">{cliente.cep}</TableCell>
                                             <TableCell align="center">
-                                                <IconButton
-                                                    variant="contained"
-                                                    sx={{
-                                                        color: 'yellow'
-                                                    }}
-                                                    onClick={() => navigateTo(`update/${cliente.id}`)}>
-                                                    <EditIcon />
-                                                </IconButton>
-                                                <IconButton
-                                                    sx={{
-                                                        color: 'red'
-                                                    }}
-                                                    onClick={() => confirmClienteDelete(cliente.id)}>
-                                                    <DeleteIcon />
-                                                </IconButton>
+                                                <Tooltip title="Editar">
+                                                    <IconButton
+                                                        variant="contained"
+                                                        sx={{
+                                                            color: 'yellow'
+                                                        }}
+                                                        onClick={() => navigateTo(`update/${cliente.id}`)}>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Deletar">
+                                                    <IconButton
+                                                        sx={{
+                                                            color: 'red'
+                                                        }}
+                                                        onClick={() => confirmClienteDelete(cliente.id)}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     )
