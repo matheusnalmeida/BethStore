@@ -1,15 +1,11 @@
 import { Grid, Typography } from '@mui/material'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useCarrinho } from '../../../../hooks/useCarrinho';
 import ProdutoItem from './ProdutoItem';
 
 function ProdutosList() {
 
     const { cartItems } = useCarrinho();
-
-    useEffect(() => {
-        console.log(cartItems)
-    }, [cartItems])
 
     return (
         <Grid

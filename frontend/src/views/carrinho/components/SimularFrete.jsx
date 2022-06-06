@@ -70,10 +70,10 @@ function SimularFrete() {
             </Grid>
             <Grid
                 item
-                xs={4}>
+                xs={8}>
                 <TextField
-                    id="cpf"
-                    name="cpf"
+                    id="cep"
+                    name="cep"
                     variant="outlined"
                     fullWidth
                     autoComplete='off'

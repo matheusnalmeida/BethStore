@@ -16,6 +16,7 @@ import CategoriaUpdate from './views/categoria/update.jsx';
 import ClienteUpdate from './views/cliente/update.jsx';
 import ProdutoUpdate from './views/produto/update.jsx';
 import CarrinhoContextProvider from './store/carrinho/CarrinhoContext.js';
+import PagamentoForm from './views/pedido/PedidoForm.jsx';
 
 const App = () => {
     return (
@@ -39,6 +40,8 @@ const App = () => {
                         <Route path="/categoria/update/:id" element={<CategoriaUpdate />} />
                         {/* Carrinho */}
                         <Route path="/carrinho" element={<Carrinho />} />
+                        {/* Pedido */}
+                        <Route path="/pedido" element={<PagamentoForm />} />
                     </Routes>
                 </BrowserRouter>
             </CarrinhoContextProvider>
