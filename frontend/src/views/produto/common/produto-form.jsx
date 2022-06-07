@@ -310,7 +310,7 @@ const ProdutoForm = ({
                                 paddingBottom: 1,
                             }}
                         >
-                            Tamanho (cm)
+                            Tamanho (cm³)
                         </InputLabel>
                         <TextField
                             id="tamanho"
@@ -318,7 +318,7 @@ const ProdutoForm = ({
                             variant="outlined"
                             fullWidth
                             autoComplete='off'
-                            placeholder='Minimo: 16cm'
+                            placeholder='Minimo: 16 cm³'
                             value={produto.tamanho}
                             onChange={handleFormChange}
                             type="number" />
