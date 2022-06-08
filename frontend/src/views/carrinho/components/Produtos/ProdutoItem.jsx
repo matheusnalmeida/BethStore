@@ -8,12 +8,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 function ProdutoItem({
     produto,
+    isDetails = false
 }) {
     const { decrease, increase, removeProduct } = useCarrinho();
 
     return (
         <Grid
             borderTop={"3px solid rgb(222, 224, 228)"}
+            borderBottom={"3px solid rgb(222, 224, 228)"}
             paddingTop={"30px"}
             container>
             <Grid
@@ -22,14 +24,26 @@ function ProdutoItem({
                 justifyContent={"center"}
                 textAlign={"center"}
                 xs={4}>
+                {
+                    isDetails &&
+                    <Grid
+                        item
+                        sx={{
+                            marginBottom: 3,
+                            color: 'rgb(127, 133, 141)'
+                        }}
+                        xs={12}>
+                        <Typography>Codigo: {produto.codigo}</Typography>
+                    </Grid>
+                }
                 <Grid
                     item
                     sx={{
-                        marginBottom: 1,
+                        marginBottom: 3,
                         color: 'rgb(127, 133, 141)'
                     }}
                     xs={12}>
-                    <Typography>{produto.marca}</Typography>
+                    <Typography>Marca: {produto.marca}</Typography>
                 </Grid>
                 <Grid
                     item
@@ -40,17 +54,30 @@ function ProdutoItem({
                     <Typography
                         fontSize={18}
                         fontWeight={"bold"}>
-                        {produto.descricao}
+                        Descrição: {produto.descricao}
                     </Typography>
                 </Grid>
                 <Grid
                     item
                     sx={{
+                        marginBottom: 3,
                         color: 'rgb(127, 133, 141)'
                     }}
                     xs={12}>
-                    <Typography>{produto.modelo}</Typography>
+                    <Typography>Modelo: {produto.modelo}</Typography>
                 </Grid>
+                {
+                    isDetails &&
+                    <Grid
+                        item
+                        sx={{
+                            marginBottom: 3,
+                            color: 'rgb(127, 133, 141)'
+                        }}
+                        xs={12}>
+                        <Typography>Tamanho: {produto.tamanho} cm³</Typography>
+                    </Grid>
+                }
             </Grid>
             <Grid
                 item
@@ -68,9 +95,11 @@ function ProdutoItem({
 
                     <IconButton
                         sx={{
-                            color: (produto.quantidade > 1 ? 'orange' : 'gray')
+                            color: (
+                                produto.quantidade > 1 ? 'orange' : 'gray'
+                            )
                         }}
-                        disabled={produto.quantidade === 1}
+                        disabled={produto.quantidade === 1 || isDetails}
                         onClick={() => decrease(produto)}
                     >
                         <ChevronLeftIcon />
@@ -83,13 +112,13 @@ function ProdutoItem({
                         sx={{
                             color: (produto.quantidade !== produto.estoque ? 'orange' : 'gray')
                         }}
-                        disabled={produto.quantidade === produto.estoque}
+                        disabled={produto.quantidade === produto.estoque || isDetails}
                         onClick={() => increase(produto)}
                     >
                         <ChevronRightIcon />
                     </IconButton>
                 </Grid>
-                <Grid
+                {!isDetails && <Grid
                     item
                     xs={12}>
                     <IconButton
@@ -99,12 +128,13 @@ function ProdutoItem({
                         onClick={() => removeProduct(produto)}
                     >
                         <Tooltip
-                        title="Remover"
+                            title="Remover"
                         >
                             <DeleteIcon />
                         </Tooltip>
                     </IconButton>
-                </Grid>
+                </Grid>}
+
             </Grid>
             <Grid
                 item

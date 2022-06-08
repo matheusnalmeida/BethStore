@@ -3,7 +3,7 @@ import React from 'react'
 import { useCarrinho } from '../../../../hooks/useCarrinho';
 import ProdutoItem from './ProdutoItem';
 
-function ProdutosList() {
+function ProdutosList({ isDetails = false }) {
 
     const { cartItems } = useCarrinho();
 
@@ -16,10 +16,13 @@ function ProdutosList() {
             <Grid
                 item
                 sx={{
-                    marginBottom: 3
+                    marginBottom: 3,
                 }}
                 xs={12}>
                 <Typography
+                    sx={{
+                        marginBottom: 3,
+                    }}
                     variant="h5"
                     fontWeight={"bold"}>
                     Produtos
@@ -29,6 +32,7 @@ function ProdutosList() {
                         return (<ProdutoItem
                             key={produto.codigo}
                             produto={produto}
+                            isDetails={isDetails}
                         />)
                     })
                 }

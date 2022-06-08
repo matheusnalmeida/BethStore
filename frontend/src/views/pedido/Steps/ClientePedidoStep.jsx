@@ -1,23 +1,35 @@
 import { Container, Grid, MenuItem, Select, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import Pedido from '../../../models/pedido'
 import ClienteService from '../../../services/cliente.service'
+import FreteService from '../../../services/frete.service'
 
 const ClientePedidoStep = ({
-    pedido = {},
+    pedido = Pedido(),
     handleFormChange = () => { return true } }) => {
     const [clientes, setClientes] = useState([])
-    
-    
-  useEffect(() => {
-    console.log(pedido)
-  }, [pedido])
-  
+
     useEffect(() => {
         ClienteService.GetAllClientes()
             .then((result) => {
                 setClientes(result.data)
             })
     }, [])
+
+    const onClienteChange = (evt) => {
+        let clienteSelecionado = clientes.find(cliente => cliente.id === evt.target.value)
+        calcularValorFrete(clienteSelecionado.cep).then(result =>
+            handleFormChange(
+                evt,
+                null,
+                { valor_frete: result.data }
+            )
+        )
+    }
+
+    const calcularValorFrete = (cep) => {
+        return FreteService.CalcularFrete(cep, pedido.produtos)
+    }
 
     return (
         <Container>
@@ -41,8 +53,10 @@ const ClientePedidoStep = ({
                     <Select
                         id="cliente_codigo"
                         name="cliente_codigo"
-                        value={pedido.cliente_codigo}
-                        onChange={handleFormChange}
+                        value={clientes.length > 0 ?
+                            pedido.cliente_codigo
+                            : ''}
+                        onChange={onClienteChange}
                         defaultValue={''}
                         fullWidth>
                         <MenuItem value={''} disabled></MenuItem>

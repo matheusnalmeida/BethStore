@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import MultiStepForm from '../../components/MultiStepForm'
 import { useCarrinho } from '../../hooks/useCarrinho';
@@ -6,7 +6,7 @@ import Pedido from '../../models/pedido';
 import ClientePedidoStep from './Steps/ClientePedidoStep';
 import FormaPagamentoStep from './Steps/FormaPagamentoStep';
 import ResumoPedidoStep from './Steps/ResumoPedidoStep';
-import { ClientePedidoValid } from './StepsValidator/step.validators';
+import { ClientePedidoValid, FormaPagamentoValid } from './StepsValidator/step.validators';
 
 function PedidoForm() {
 
@@ -14,40 +14,46 @@ function PedidoForm() {
   const { cartItems } = useCarrinho();
   const [pedido, setPedido] = useState(Pedido())
 
-  const handleFormChange = (evt, mask) => {
-    let value = mask && typeof(mask) === "function" 
-    ? mask(evt.target.value) 
-    : evt.target.value;
+  const handleFormChange = (evt, mask, extraProperties = {}) => {
+    let value = mask && typeof (mask) === "function"
+      ? mask(evt.target.value)
+      : evt.target.value;
     setPedido(prevPedido => {
       return {
         ...prevPedido,
         [evt.target.name]: value,
+        ...extraProperties
       }
     })
   }
 
-  const steps = useRef([
-    <ClientePedidoStep 
-      key={0} 
-      label={'Responsável'} 
-      pedido={pedido}
-      handleFormChange={handleFormChange}
-      validator={() => ClientePedidoValid(pedido)}/>,
-    <FormaPagamentoStep key={1} label={'Forma de Pagamento'} />,
-    <ResumoPedidoStep key={2} label={'Resumo'} />
-  ]);
-
   useEffect(() => {
     if (cartItems.length === 0) {
       navigate('/carrinho')
+      return;
     }
-  }, [navigate, cartItems.length])
+    pedido.produtos = cartItems;
+  }, [navigate, pedido, cartItems])
 
   return (
-    <MultiStepForm
-      children={steps.current}
-    >
-
+    <MultiStepForm>
+      <ClientePedidoStep
+        key={0}
+        label={'Responsável'}
+        pedido={pedido}
+        handleFormChange={handleFormChange}
+        validator={() => ClientePedidoValid(pedido)} />
+      <FormaPagamentoStep 
+        key={1} 
+        label={'Forma de Pagamento'}
+        pedido={pedido}
+        handleFormChange={handleFormChange}
+        validator={() => FormaPagamentoValid(pedido)} />
+      <ResumoPedidoStep 
+        key={2} 
+        label={'Resumo'}
+        pedido={pedido}
+        handleFormChange={handleFormChange}/>
     </MultiStepForm>
   )
 }

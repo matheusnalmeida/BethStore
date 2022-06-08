@@ -1,5 +1,5 @@
-export default FormaPagamentoEnum = {
-    PIX: 'PIX',
-    BOLETO: 'Boleto',
-    CARTAO_CREDITO: 'Cartão de crédito'
-};
+export const PIX = 'PIX'
+
+export const BOLETO = 'Boleto'
+
+export const CARTAO_CREDITO = 'Cartão de crédito'
