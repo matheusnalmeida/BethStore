@@ -27,6 +27,10 @@ function PedidoForm() {
     })
   }
 
+  const handleSubmit = () => {
+    console.log(pedido)
+  }
+
   useEffect(() => {
     if (cartItems.length === 0) {
       navigate('/carrinho')
@@ -36,7 +40,9 @@ function PedidoForm() {
   }, [navigate, pedido, cartItems])
 
   return (
-    <MultiStepForm>
+    <MultiStepForm
+      onSubmit={handleSubmit}
+    >
       <ClientePedidoStep
         key={0}
         label={'Responsável'}
