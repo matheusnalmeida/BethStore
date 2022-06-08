@@ -1,5 +1,6 @@
 from sqlalchemy import Column
 from extensions.extensions import db
+from model.produto_pedido import ProdutoPedido
 from model.shared.result import Result
 from utils import model_to_json
 
@@ -16,6 +17,7 @@ class Produto(db.Model):
     categoria_codigo = db.Column(db.Integer, db.ForeignKey('categoria.codigo'), nullable=False)
     categoria = db.relationship("Categoria", backref="categoria", uselist=False) 
     ativo = Column(db.Boolean, default=True, nullable=False)
+    pedidos = db.relationship('Pedido', secondary=ProdutoPedido.__table__, backref='Produto')
 
     def is_valid(self) -> Result:
         if (

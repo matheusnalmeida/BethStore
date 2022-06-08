@@ -1,5 +1,6 @@
 from config import DefaultConfig
 from flask import Flask, render_template
+from controller.pedido_controller import pedido
 from controller.produto_controller import produto
 from controller.categoria_controller import categoria
 from controller.cliente_controller import cliente
@@ -30,6 +31,8 @@ def init_db(app):
             db.session.add(CategoriaVestuario)
             db.session.commit()
 
+# Produto Controller
+app.register_blueprint(pedido)
 # Produto Controller
 app.register_blueprint(produto)
 # Categoria Controller
