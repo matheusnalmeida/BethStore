@@ -17,6 +17,9 @@ const ClienteForm = ({
     const [cliente, setCliente] = useState(clienteProp)
 
     const handleFormChange = (evt, mask) => {
+        if (!evt){
+            return;
+        }
         let value = mask ? mask(evt.target.value) : evt.target.value;
         setCliente(prevCliente => {
             return {

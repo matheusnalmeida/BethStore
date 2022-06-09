@@ -15,6 +15,9 @@ function PedidoForm() {
   const [pedido, setPedido] = useState(Pedido())
 
   const handleFormChange = (evt, mask, extraProperties = {}) => {
+    if (!evt){
+      return;
+  }
     let value = mask && typeof (mask) === "function"
       ? mask(evt.target.value)
       : evt.target.value;
@@ -29,6 +32,7 @@ function PedidoForm() {
 
   const handleSubmit = () => {
     console.log(pedido)
+    console.log(JSON. stringify(pedido))
   }
 
   useEffect(() => {

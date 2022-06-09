@@ -15,6 +15,9 @@ const CategoriaForm = ({
     const [categoria, setCategoria] = useState(categoriaProp)
 
     const handleFormChange = (evt) => {
+        if (!evt){
+            return;
+        }
         setCategoria(prevCategoria => {
             return {
                 ...prevCategoria,

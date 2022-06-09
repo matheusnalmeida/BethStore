@@ -27,6 +27,9 @@ const ProdutoForm = ({
     }, [])
 
     const handleFormChange = (evt, mask) => {
+        if (!evt){
+            return;
+        }
         let value = mask 
         && typeof(mask) === "function" ? mask(evt.target.value): evt.target.value;
         setProduto(prevProduto => {
