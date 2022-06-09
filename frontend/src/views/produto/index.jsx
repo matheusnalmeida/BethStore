@@ -131,9 +131,9 @@ const ProdutoHome = () => {
                                                         <span>
                                                             <IconButton
                                                                 sx={{
-                                                                    color: isInCart(produto) ? 'gray' : 'orange'
+                                                                    color: isInCart(produto) || produto.estoque === 0 ? 'gray' : 'orange'
                                                                 }}
-                                                                disabled={isInCart(produto)}
+                                                                disabled={isInCart(produto) || produto.estoque === 0}
                                                                 onClick={() => addProduct(produto)}>
                                                                 <ShoppingCartIcon />
                                                             </IconButton>
