@@ -7,17 +7,19 @@ import ClientePedidoStep from './Steps/ClientePedidoStep';
 import FormaPagamentoStep from './Steps/FormaPagamentoStep';
 import ResumoPedidoStep from './Steps/ResumoPedidoStep';
 import { ClientePedidoValid, FormaPagamentoValid } from './StepsValidator/step.validators';
+import PedidoService from '../../services/pedido.service'
+import { showErrorMessage, showSuccessMessage } from '../../utils/toast.utils';
 
 function PedidoForm() {
 
   const navigate = useNavigate();
-  const { cartItems } = useCarrinho();
+  const { cartItems, handleCheckout } = useCarrinho();
   const [pedido, setPedido] = useState(Pedido())
 
   const handleFormChange = (evt, mask, extraProperties = {}) => {
-    if (!evt){
+    if (!evt) {
       return;
-  }
+    }
     let value = mask && typeof (mask) === "function"
       ? mask(evt.target.value)
       : evt.target.value;
@@ -31,8 +33,15 @@ function PedidoForm() {
   }
 
   const handleSubmit = () => {
-    console.log(pedido)
-    console.log(JSON. stringify(pedido))
+    PedidoService.CreatePedido(pedido).then((result) => {
+      if (result.success) {
+        showSuccessMessage(result.message)
+        handleCheckout();
+        navigate('/pedido');
+        return;
+      }
+      showErrorMessage(result.message)
+    });
   }
 
   useEffect(() => {
@@ -53,17 +62,17 @@ function PedidoForm() {
         pedido={pedido}
         handleFormChange={handleFormChange}
         validator={() => ClientePedidoValid(pedido)} />
-      <FormaPagamentoStep 
-        key={1} 
+      <FormaPagamentoStep
+        key={1}
         label={'Forma de Pagamento'}
         pedido={pedido}
         handleFormChange={handleFormChange}
         validator={() => FormaPagamentoValid(pedido)} />
-      <ResumoPedidoStep 
-        key={2} 
+      <ResumoPedidoStep
+        key={2}
         label={'Resumo'}
         pedido={pedido}
-        handleFormChange={handleFormChange}/>
+        handleFormChange={handleFormChange} />
     </MultiStepForm>
   )
 }

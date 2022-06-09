@@ -41,7 +41,6 @@ const CarrinhoContextProvider = ({children}) => {
     }
 
     const handleCheckout = () => {
-        console.log('CHECKOUT', state);
         dispatch({type: 'CHECKOUT'})
     }
 

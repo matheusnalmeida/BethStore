@@ -31,7 +31,13 @@ const pages = [
     {
         'name': 'Categorias',
         'link': '/categoria'
-    }];
+    }
+    ,
+    {
+        'name': 'Pedidos',
+        'link': '/pedido'
+    }
+];
 const settings = [];
 
 const AppNavBar = () => {

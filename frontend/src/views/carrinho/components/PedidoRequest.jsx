@@ -16,7 +16,7 @@ function PedidoRequest() {
                 xs={8}>
                 <Button
                     variant="contained"
-                    onClick={() => navigate('/pedido')}
+                    onClick={() => navigate('/pedido/pagamento')}
                     disabled={cartItems.length === 0}
                 >Seguir para o pagamento
                 </Button>

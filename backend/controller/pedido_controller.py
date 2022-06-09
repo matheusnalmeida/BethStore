@@ -55,15 +55,19 @@ def register():
         db.session.flush()
         produtosPedido = []
         for produto_json in pedido_json['produtos']:
-            produtosPedido.append(ProdutoPedido(
+            produto_pedido = ProdutoPedido(
                 produto_codigo = get_json_val(produto_json, 'codigo'),
                 pedido_codigo = pedido.codigo,
                 preco = get_json_val(produto_json, 'preco'),
                 tamanho = get_json_val(produto_json, 'tamanho'),
                 quantidade = get_json_val(produto_json, 'quantidade')
-            ))
+            )
+            produtosPedido.append(produto_pedido)
+            current_produto :Produto = Produto.query.get(produto_pedido.produto_codigo)
+            current_produto.estoque = current_produto.estoque - produto_pedido.quantidade
         db.session.add_all(produtosPedido)
         db.session.commit()
+        result.success = True
         result.message = 'Pedido inserido com sucesso!'
         result.data = pedido
 

@@ -40,3 +40,11 @@ export const GET_CEP_INFO = (cep) => `/${cep}/json/`
 // FRETE 
 
 export const CALCULAR_FRETE = (cep) => `/frete/calcular-frete/${cep}`
+
+// PEDIDO
+
+export const GET_PEDIDOS = '/pedido'
+
+export const GET_PEDIDO = (id) => `/pedido/${id}`
+
+export const REGISTER_PEDIDO = '/pedido/register'

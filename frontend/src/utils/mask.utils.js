@@ -51,3 +51,13 @@ export const brasilianDateMask = (date) => {
     let yearF = date.getFullYear();
     return dayF + "/" + monthF + "/" + yearF;
 }
+
+export const brasilianDateMaskFromUTCString = (dateText) => {
+    let date = new Date(dateText)
+    let day = (date.getDate() + 1).toString();
+    let dayF = (day.length === 1) ? '0' + day : day;
+    let month = (date.getMonth() + 1).toString();
+    let monthF = (month.length === 1) ? '0' + month : month;
+    let yearF = date.getFullYear();
+    return dayF + "/" + monthF + "/" + yearF;
+}
