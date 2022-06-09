@@ -5,6 +5,7 @@ const Cliente = (
     email = "",
     cpf = "",
     cep = "",
+    endereco = "",
     ativo = null
 ) => {
     return {

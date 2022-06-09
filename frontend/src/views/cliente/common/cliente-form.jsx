@@ -3,6 +3,7 @@ import { Box, Container } from '@mui/system';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cliente from '../../../models/cliente';
+import CEPService from '../../../services/cep.service';
 import ClienteService from '../../../services/cliente.service';
 import { cepMask, cpfMask, phoneMask } from '../../../utils/mask.utils';
 import { showErrorMessage, showSuccessMessage } from '../../../utils/toast.utils';
@@ -16,17 +17,41 @@ const ClienteForm = ({
     const navigate = useNavigate();
     const [cliente, setCliente] = useState(clienteProp)
 
+    const updateState = (data) => {
+        setCliente(prevCliente => {
+            return {
+                ...prevCliente,
+                ...data,
+            }
+        })
+    }
+
     const handleFormChange = (evt, mask) => {
         if (!evt){
             return;
         }
         let value = mask ? mask(evt.target.value) : evt.target.value;
-        setCliente(prevCliente => {
-            return {
-                ...prevCliente,
-                [evt.target.name]: value,
-            }
-        })
+        updateState({[evt.target.name]: value})
+    }
+
+    const handleFormCEPChange = (evt, mask) => {
+        if (!evt){
+            return;
+        }
+        let cep = evt.target.value;
+        if(cepValid(cep)){
+            CEPService.GetCEPInfo(cep).then((result) => {
+                if (result.erro){
+                    showErrorMessage("O CEP informado não existe!")
+                    updateState({endereco: ''})
+                    return;
+                }
+                updateState({endereco: result.logradouro})
+            })
+        }else {
+            updateState({endereco: ''})
+        }
+        handleFormChange(evt, mask)
     }
 
     const handleBack = () => {
@@ -98,7 +123,8 @@ const ClienteForm = ({
             !!cliente.cep &&
             !!cliente.email &&
             !!cliente.nome &&
-            !!cliente.telefone
+            !!cliente.telefone &&
+            !!cliente.endereco
         );
     }
 
@@ -124,7 +150,7 @@ const ClienteForm = ({
                         sx={{
                             padding: 3
                         }}
-                        xs={6}
+                        xs={3}
                     >
                         <InputLabel
                             sx={{
@@ -148,7 +174,7 @@ const ClienteForm = ({
                         sx={{
                             padding: 3
                         }}
-                        xs={6}
+                        xs={3}
                     >
                         <InputLabel
                             sx={{
@@ -165,7 +191,32 @@ const ClienteForm = ({
                             fullWidth
                             autoComplete='off'
                             value={cliente.cep}
-                            onChange={(evt) => handleFormChange(evt, cepMask)} />
+                            onChange={(evt) => handleFormCEPChange(evt, cepMask)} />
+                    </Grid>
+                    <Grid
+                        item
+                        sx={{
+                            padding: 3
+                        }}
+                        xs={3}
+                    >
+                        <InputLabel
+                            sx={{
+                                color: "black",
+                                paddingBottom: 1,
+                            }}
+                        >
+                            Endereço
+                        </InputLabel>
+                        <TextField
+                            id="endereco"
+                            name="endereco"
+                            variant="outlined"
+                            fullWidth
+                            autoComplete='off'
+                            value={cliente.endereco}
+                            disabled
+                            onChange={handleFormChange} />
                     </Grid>
                 </Grid>
                 <Grid

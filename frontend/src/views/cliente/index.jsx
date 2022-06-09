@@ -82,6 +82,7 @@ const ClienteHome = () => {
                                 <TableCell align="center">Email</TableCell>
                                 <TableCell align="center">CPF</TableCell>
                                 <TableCell align="center">CEP</TableCell>
+                                <TableCell align="center">Endereço</TableCell>
                                 <TableCell align="center">Ações</TableCell>
                             </TableRow>
                         </TableHead>
@@ -98,6 +99,7 @@ const ClienteHome = () => {
                                             <TableCell align="center">{cliente.email}</TableCell>
                                             <TableCell align="center">{cliente.cpf}</TableCell>
                                             <TableCell align="center">{cliente.cep}</TableCell>
+                                            <TableCell align="center">{cliente.endereco}</TableCell>
                                             <TableCell align="center">
                                                 <Tooltip title="Editar">
                                                     <IconButton

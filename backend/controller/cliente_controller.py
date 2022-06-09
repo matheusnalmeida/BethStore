@@ -32,7 +32,8 @@ def register():
         telefone = get_json_val(cliente_json, 'telefone'),
         email = get_json_val(cliente_json, 'email'),
         cpf = get_json_val(cliente_json, 'cpf'),
-        cep = get_json_val(cliente_json, 'cep')
+        cep = get_json_val(cliente_json, 'cep'),
+        endereco = get_json_val(cliente_json, 'endereco')
     )
 
     result = cliente.is_valid()
@@ -63,7 +64,8 @@ def update(id):
         telefone = get_json_val(cliente_json, 'telefone'),
         email = get_json_val(cliente_json, 'email'),
         cpf = get_json_val(cliente_json, 'cpf'),
-        cep = get_json_val(cliente_json, 'cep')
+        cep = get_json_val(cliente_json, 'cep'),
+        endereco = get_json_val(cliente_json, 'endereco')
     )
 
     cliente_atual.fill_update(cliente)
