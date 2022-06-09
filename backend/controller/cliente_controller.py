@@ -96,10 +96,10 @@ def delete(id):
 
 
 def validate_cliente(cliente: Cliente) -> Result:
-    if Cliente.query.filter_by(cpf=cliente.cpf).first() != None:
+    if Cliente.query.filter_by(cpf=cliente.cpf).filter(Cliente.ativo == True).first() != None:
         return Result(success=False, message="Já existe um cliente com este CPF")
 
-    if Cliente.query.filter_by(email=cliente.email).first() != None:
+    if Cliente.query.filter_by(email=cliente.email).filter(Cliente.ativo == True).first() != None:
         return Result(success=False, message="Já existe um cliente com este email")
 
     return Result(success=True)
