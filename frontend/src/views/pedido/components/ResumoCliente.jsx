@@ -40,7 +40,7 @@ function ResumoCliente({ cliente }) {
             <Typography
                 mt={2}
             >
-                Endereço: { }
+                Endereço: {cliente?.endereco ?? ''}
             </Typography>
         </Grid>
     );
