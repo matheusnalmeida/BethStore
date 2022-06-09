@@ -17,7 +17,7 @@ class Produto(db.Model):
     categoria_codigo = db.Column(db.Integer, db.ForeignKey('categoria.codigo'), nullable=False)
     categoria = db.relationship("Categoria", backref="categoria", uselist=False) 
     ativo = Column(db.Boolean, default=True, nullable=False)
-    pedidos = db.relationship('Pedido', secondary=ProdutoPedido.__table__, backref='Produto')
+    pedidos = db.relationship('ProdutoPedido', backref='Produto')
 
     def is_valid(self) -> Result:
         if (

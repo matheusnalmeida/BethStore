@@ -10,6 +10,7 @@ class ProdutoPedido(db.Model):
     produto_codigo = Column(db.Integer, db.ForeignKey('produtos.codigo'))
     produto = db.relationship("Produto", backref="produto", uselist=False)
     pedido_codigo = Column(db.Integer, db.ForeignKey('pedidos.codigo'))
+    pedido = db.relationship("Pedido", backref="pedido", uselist=False)
     preco = Column(db.Float, nullable=False)
     tamanho = Column(db.Float, nullable = False)
     quantidade = Column(db.Integer, nullable=False)

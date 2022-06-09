@@ -15,7 +15,7 @@ class Pedido(db.Model):
     valor_total = Column(db.Float, nullable = False)
     cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
     cliente = db.relationship("Cliente", backref="cliente", uselist=False)
-    produtos = db.relationship("Produto", secondary=ProdutoPedido.__table__, backref='Pedido')
+    produtos = db.relationship("ProdutoPedido", backref='Pedido')
     aprovacao_id = db.Column(db.Integer, db.ForeignKey('aprovacoes.id'), nullable=False, unique=True)
     aprovacao = db.relationship("Aprovacao", backref="aprovacao", uselist=False)
 
