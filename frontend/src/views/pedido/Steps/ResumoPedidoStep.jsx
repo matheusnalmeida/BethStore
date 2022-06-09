@@ -8,8 +8,8 @@ import ResumoCliente from '../components/ResumoCliente';
 import ResumoPagamento from '../components/ResumoPagamento';
 
 const ResumoPedidoStep = ({
+  produtos,
   pedido = Pedido(),
-
 }) => {
 
   const [cliente, setCliente] = useState()
@@ -49,6 +49,7 @@ const ResumoPedidoStep = ({
           item
           xs={12}>
           <ProdutosList
+            produtos={produtos}
             isDetails={true} />
         </Grid>
         <Grid

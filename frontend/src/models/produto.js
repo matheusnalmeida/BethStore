@@ -8,6 +8,7 @@ const Produto = (
     descricao = "",
     categoria_codigo = "",
     categoria = {},
+    quantidade = "",
     ativo = null
 ) => {
     return {  
@@ -20,6 +21,7 @@ const Produto = (
         descricao: descricao,
         categoria_codigo: categoria_codigo,
         categoria: categoria,
+        quantidade: quantidade,
         ativo: ativo
     }
 }

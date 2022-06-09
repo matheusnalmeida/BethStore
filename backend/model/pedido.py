@@ -26,6 +26,7 @@ class Pedido(db.Model):
             "previsao_entrega": self.previsao_entrega,
             "valor_frete": self.valor_frete,
             "valor_total": self.valor_total,
+            "cliente_codigo": self.cliente_id,
             "cliente": model_to_json(self.cliente),
             "produtos_pedido": model_to_json(self.produtoPedido),
             "aprovacao": model_to_json(self.aprovacao),

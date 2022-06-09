@@ -3,8 +3,10 @@ import React from 'react'
 import { useCarrinho } from '../../../../hooks/useCarrinho';
 import ProdutoItem from './ProdutoItem';
 
-function ProdutosList({ isDetails = false }) {
-
+function ProdutosList({ 
+    produtos,
+    isDetails = false
+ }) {
     const { cartItems } = useCarrinho();
 
     return (
@@ -28,7 +30,7 @@ function ProdutosList({ isDetails = false }) {
                     Produtos
                 </Typography>
                 {
-                    cartItems.map(produto => {
+                    (produtos ?? cartItems).map(produto => {
                         return (<ProdutoItem
                             key={produto.codigo}
                             produto={produto}

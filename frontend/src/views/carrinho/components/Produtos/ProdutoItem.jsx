@@ -11,7 +11,7 @@ function ProdutoItem({
     isDetails = false
 }) {
     const { decrease, increase, removeProduct } = useCarrinho();
-
+    console.log(produto)
     return (
         <Grid
             borderTop={"3px solid rgb(222, 224, 228)"}
