@@ -2,6 +2,8 @@ from sqlalchemy import Column
 from extensions.extensions import db
 from model.produto_pedido import ProdutoPedido
 from model.shared.result import Result
+from model.aprovacao import Aprovacao
+from utils import model_to_json
 
 class Pedido(db.Model):
     __tablename__ = 'pedidos'
@@ -14,6 +16,17 @@ class Pedido(db.Model):
     cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
     cliente = db.relationship("Cliente", backref="cliente", uselist=False)
     produtos = db.relationship("Produto", secondary=ProdutoPedido.__table__, backref='Pedido')
+    aprovacao_id = db.Column(db.Integer, db.ForeignKey('aprovacoes.id'), nullable=False, unique=True)
+    aprovacao = db.relationship("Aprovacao", backref="aprovacao", uselist=False)
 
-    def is_valid(self) -> Result:
-        pass
+    def to_json(self):
+        return {
+            "codigo": self.codigo,
+            "forma_pagamento": self.forma_pagamento,
+            "previsao_entrega": self.previsao_entrega,
+            "valor_frete": self.valor_frete,
+            "valor_total": self.valor_total,
+            "cliente": model_to_json(self.cliente),
+            "produtos": model_to_json(self.produtos),
+            "aprovacao": model_to_json(self.aprovacao),
+        }

@@ -1,5 +1,4 @@
-from tkinter.messagebox import RETRY
-
+from sqlalchemy.orm.collections import InstrumentedList
 
 def del_none(d):
     for key, value in list(d.items()):
@@ -13,7 +12,8 @@ def del_none(d):
 def model_to_json(data):
     if data == None:
         return None
-
+    if (type(data) == InstrumentedList):
+        data = list(data)
     if (type(data) == list):
         return [model_to_json(act_data) for act_data in data]
     
