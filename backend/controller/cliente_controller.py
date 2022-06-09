@@ -105,10 +105,10 @@ def validate_cliente(cliente: Cliente) -> Result:
     return Result(success=True)
 
 def validate_cliente_update(cliente: Cliente) -> Result:
-    if Cliente.query.filter_by(cpf=cliente.cpf).filter(Cliente.id != cliente.id).first() != None:
+    if Cliente.query.filter_by(cpf=cliente.cpf).filter(Cliente.id != cliente.id).filter(Cliente.ativo == True).first() != None:
         return Result(success=False, message="Já existe um cliente com este CPF")
 
-    if Cliente.query.filter_by(email=cliente.email).filter(Cliente.id != cliente.id).first() != None:
+    if Cliente.query.filter_by(email=cliente.email).filter(Cliente.id != cliente.id).filter(Cliente.ativo == True).first() != None:
         return Result(success=False, message="Já existe um cliente com este email")
 
     return Result(success=True)
