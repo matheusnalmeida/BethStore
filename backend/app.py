@@ -16,7 +16,7 @@ CORS(app)
 # Load app config
 app.config.from_object(DefaultConfig)
 
-# flask-sqlalchemy
+# flask-sqlalchemy 
 db.init_app(app)
 with app.app_context():
     db.create_all()
