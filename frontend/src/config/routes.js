@@ -1,5 +1,5 @@
 // CATEGORIAS
-export const GET_CATEGORIAS = '/categoria'
+export const GET_CATEGORIAS = '/categoria/'
 
 export const GET_CATEGORIA = (id) => `/categoria/${id}`
 
@@ -11,7 +11,7 @@ export const UPDATE_CATEGORIA = (id) => `/categoria/${id}/update`
 
 // CLIENTES
 
-export const GET_CLIENTES = '/cliente'
+export const GET_CLIENTES = '/cliente/'
 
 export const GET_CLIENTE = (id) => `/cliente/${id}`
 
@@ -23,7 +23,7 @@ export const UPDATE_CLIENTE = (id) => `/cliente/${id}/update`
 
 // CLIENTES
 
-export const GET_PRODUTOS = '/produto'
+export const GET_PRODUTOS = '/produto/'
 
 export const GET_PRODUTO = (id) => `/produto/${id}`
 
@@ -43,7 +43,7 @@ export const CALCULAR_FRETE = (cep) => `/frete/calcular-frete/${cep}`
 
 // PEDIDO
 
-export const GET_PEDIDOS = '/pedido'
+export const GET_PEDIDOS = '/pedido/'
 
 export const GET_PEDIDO = (id) => `/pedido/${id}`
 
