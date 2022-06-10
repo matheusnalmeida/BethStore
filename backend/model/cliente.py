@@ -7,10 +7,10 @@ class Cliente(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     nome = Column(db.String(250), nullable=False)
-    telefone = Column(db.String(11), nullable = False)
+    telefone = Column(db.String(25), nullable = False)
     email = Column(db.String(250), nullable = False)
     cpf = Column(db.String(14), nullable = False)
-    cep = Column(db.String(9), nullable = False)
+    cep = Column(db.String(25), nullable = False)
     endereco = Column(db.String(250), nullable = False)
     ativo = Column(db.Boolean, default=True, nullable=False)
     
