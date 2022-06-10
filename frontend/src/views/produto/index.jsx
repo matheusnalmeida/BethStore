@@ -10,23 +10,29 @@ import { showConfirmationDialog } from '../../utils/dialog.utils';
 import { priceMask } from '../../utils/mask.utils';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useCarrinho } from '../../hooks/useCarrinho';
+import { useBlocking } from '../../hooks/useBlocking';
 
 const ProdutoHome = () => {
     const [produtos, setProdutos] = useState([]);
     const navigate = useNavigate();
     const { addProduct, isInCart } = useCarrinho();
+    const { Blocking, Unblocking } = useBlocking();
 
     useEffect(() => {
         fetchProdutos();
     }, []);
 
     const fetchProdutos = () => {
+        Blocking();
         ProdutoService.GetAllProdutos().then((result) => {
             setProdutos(result.data)
+        }).finally(() => {
+            Unblocking();
         });
     }
 
     const deleteProduto = (codigo) => {
+        Blocking()
         ProdutoService.DeleteProduto(codigo).then((result) => {
             if (result.success) {
                 showSuccessMessage(result.message)
@@ -34,6 +40,8 @@ const ProdutoHome = () => {
                 return;
             }
             showErrorMessage(result.message)
+        }).finally(() => {
+            Unblocking()
         });
     }
 

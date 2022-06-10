@@ -2,6 +2,7 @@ import { Card, CardContent } from '@mui/material';
 import { Container } from '@mui/system';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
+import { useBlocking } from '../../hooks/useBlocking';
 import Produto from '../../models/produto';
 import PedidoService from '../../services/pedido.service'
 import { brasilianDateMaskFromUTCString } from '../../utils/mask.utils';
@@ -12,9 +13,11 @@ import ResumoPedidoStep from './Steps/ResumoPedidoStep';
 function PedidoDetails() {
     const params = useParams();
     const [pedidoFound, setPedidoFound] = useState();
+    const { Blocking, Unblocking } = useBlocking();
 
     useEffect(() => {
         let pedidoId = params.id;
+        Blocking()
         PedidoService.GetPedido(pedidoId).then((result) => {
             if (result.success) {
                 formatObject(result.data)
@@ -22,6 +25,8 @@ function PedidoDetails() {
                 return;
             }
             showErrorMessage(result.message)
+        }).finally(() => {
+            Unblocking()
         });
     }, [params.id]);
 

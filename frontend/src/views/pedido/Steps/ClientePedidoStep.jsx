@@ -1,5 +1,6 @@
 import { Container, Grid, MenuItem, Select, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import { useBlocking } from '../../../hooks/useBlocking'
 import Pedido from '../../../models/pedido'
 import ClienteService from '../../../services/cliente.service'
 import FreteService from '../../../services/frete.service'
@@ -8,23 +9,30 @@ const ClientePedidoStep = ({
     pedido = Pedido(),
     handleFormChange = () => { return true } }) => {
     const [clientes, setClientes] = useState([])
+    const { Blocking, Unblocking } = useBlocking();
 
     useEffect(() => {
+        Blocking()
         ClienteService.GetAllClientes()
             .then((result) => {
                 setClientes(result.data)
+            }).finally(() => {
+                Unblocking()
             })
     }, [])
 
     const onClienteChange = (evt) => {
         let clienteSelecionado = clientes.find(cliente => cliente.id === evt.target.value)
+        Blocking()
         calcularValorFrete(clienteSelecionado.cep).then(result =>
             handleFormChange(
                 evt,
                 null,
                 { valor_frete: result.data }
             )
-        )
+        ).finally(() => {
+            Unblocking();
+        })
     }
 
     const calcularValorFrete = (cep) => {

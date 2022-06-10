@@ -2,6 +2,7 @@ import { Button, Grid, InputLabel, TextField } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useBlocking } from '../../../hooks/useBlocking';
 import Cliente from '../../../models/cliente';
 import CEPService from '../../../services/cep.service';
 import ClienteService from '../../../services/cliente.service';
@@ -16,6 +17,7 @@ const ClienteForm = ({
 
     const navigate = useNavigate();
     const [cliente, setCliente] = useState(clienteProp)
+    const { Blocking, Unblocking } = useBlocking();
 
     const updateState = (data) => {
         setCliente(prevCliente => {
@@ -40,6 +42,7 @@ const ClienteForm = ({
         }
         let cep = evt.target.value;
         if(cepValid(cep)){
+            Blocking()
             CEPService.GetCEPInfo(cep).then((result) => {
                 if (result.erro){
                     showErrorMessage("O CEP informado não existe!")
@@ -47,6 +50,8 @@ const ClienteForm = ({
                     return;
                 }
                 updateState({endereco: result.logradouro})
+            }).finally(() => {
+                Unblocking()
             })
         }else {
             updateState({endereco: ''})
@@ -59,6 +64,7 @@ const ClienteForm = ({
     }
 
     const CreateCliente = () => {
+        Blocking()
         ClienteService.CreateCliente(cliente).then((result) => {
             if (result.success){
                 showSuccessMessage(result.message)
@@ -66,10 +72,13 @@ const ClienteForm = ({
                 return;
             }
             showErrorMessage(result.message)
+        }).finally(() => {
+            Unblocking()
         });
     }
 
     const UpdateCliente = () => {
+        Blocking()
         ClienteService.UpdateCliente(cliente.id, cliente).then((result) => {
             if (result.success){
                 showSuccessMessage(result.message)
@@ -77,6 +86,8 @@ const ClienteForm = ({
                 return;
             }
             showErrorMessage(result.message)
+        }).finally(() => {
+            Unblocking()
         });
     }
 

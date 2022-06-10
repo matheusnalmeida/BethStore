@@ -9,6 +9,7 @@ import { onlyNumberMask } from '../../../utils/mask.utils';
 import { showErrorMessage, showSuccessMessage } from '../../../utils/toast.utils';
 import CustomPriceInput from '../../../components/CustomPriceInput';
 import { useCarrinho } from '../../../hooks/useCarrinho';
+import { useBlocking } from '../../../hooks/useBlocking';
 
 const ProdutoForm = ({
     isEdit = false,
@@ -19,10 +20,14 @@ const ProdutoForm = ({
     const [categorias, setCategorias] = useState([])
     const [produto, setProduto] = useState(produtoProp)
     const { cartItems, updateProduct } = useCarrinho();
+    const { Blocking, Unblocking } = useBlocking();
 
     useEffect(() => {
+        Blocking();
         CategoriaService.GetAllCategorias().then((result) => {
             setCategorias(result.data)
+        }).finally(() => {
+            Unblocking();
         });
     }, [])
 
@@ -45,6 +50,7 @@ const ProdutoForm = ({
     }
 
     const CreateProduto = () => {
+        Blocking()
         ProdutoService.CreateProduto(produto).then((result) => {
             if (result.success) {
                 showSuccessMessage(result.message)
@@ -52,10 +58,13 @@ const ProdutoForm = ({
                 return;
             }
             showErrorMessage(result.message)
+        }).finally(() => {
+            Unblocking()
         });
     }
 
     const UpdateProduto = () => {
+        Blocking()
         ProdutoService.UpdateProduto(produto.codigo, produto).then((result) => {
             if (result.success) {
                 showSuccessMessage(result.message)
@@ -64,6 +73,8 @@ const ProdutoForm = ({
                 return;
             }
             showErrorMessage(result.message)
+        }).finally(() => {
+            Unblocking()
         });
     }
 

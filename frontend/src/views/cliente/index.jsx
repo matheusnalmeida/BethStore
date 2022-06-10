@@ -7,22 +7,28 @@ import { Box } from '@mui/system';
 import ClienteService from '../../services/cliente.service'
 import { showConfirmationDialog } from '../../utils/dialog.utils';
 import { showErrorMessage, showSuccessMessage } from '../../utils/toast.utils';
+import { useBlocking } from '../../hooks/useBlocking';
 
 const ClienteHome = () => {
     const [clientes, setClientes] = useState([]);
     const navigate = useNavigate();
+    const { Blocking, Unblocking } = useBlocking();
 
     useEffect(() => {
         fetchClientes();
     }, []);
 
     const fetchClientes = () => {
+        Blocking();
         ClienteService.GetAllClientes().then((result) => {
             setClientes(result.data)
+        }).finally(() => {
+            Unblocking()
         });
     }
 
     const deleteCliente = (codigo) => {
+        Blocking();
         ClienteService.DeleteCliente(codigo).then((result) => {
             if (result.success) {
                 showSuccessMessage(result.message)
@@ -30,6 +36,8 @@ const ClienteHome = () => {
                 return;
             }
             showErrorMessage(result.message)
+        }).finally(() => {
+            Unblocking()
         });
     }
 

@@ -19,10 +19,11 @@ import CarrinhoContextProvider from './store/carrinho/CarrinhoContext.js';
 import PagamentoForm from './views/pedido/PedidoForm.jsx';
 import PedidoHome from './views/pedido/index.jsx';
 import PedidoDetails from './views/pedido/details.jsx';
+import BethStoreContext from "./store/bethstore/BethStoreContext";
 
 const App = () => {
     return (
-        <>
+        <BethStoreContext>
             <CarrinhoContextProvider>
                 <BrowserRouter>
                     <AppNavBar />
@@ -44,7 +45,7 @@ const App = () => {
                         <Route path="/carrinho" element={<Carrinho />} />
                         {/* Pedido */}
                         <Route path="/pedido" element={<PedidoHome />} />
-                        <Route path="/pedido/pagamento" element={<PagamentoForm />} />                                        
+                        <Route path="/pedido/pagamento" element={<PagamentoForm />} />
                         <Route path="/pedido/details/:id" element={<PedidoDetails />} />
                     </Routes>
                 </BrowserRouter>
@@ -61,7 +62,7 @@ const App = () => {
                 draggable
                 pauseOnHover={false}
             />
-        </>
+        </BethStoreContext>
     );
 }
 

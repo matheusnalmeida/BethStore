@@ -1,5 +1,6 @@
 import { Button, Grid, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
+import { useBlocking } from '../../../hooks/useBlocking';
 import { useCarrinho } from '../../../hooks/useCarrinho';
 import FreteService from '../../../services/frete.service';
 import { cepMask, priceMask } from '../../../utils/mask.utils';
@@ -10,13 +11,15 @@ function SimularFrete() {
     const { cartItems } = useCarrinho();
     const [cepSimular, setCepSimular] = useState('')
     const [freteSimulacaoValor, setFreteSimulacaoValor] = useState(null)
+    const { Blocking, Unblocking } = useBlocking();
 
     const simularCep = async () => {
+        Blocking()
         if (!(await isValid())) {
             setFreteSimulacaoValor(null)
+            Unblocking()
             return;
         }
-
         FreteService.CalcularFrete(cepSimular, cartItems)
         .then((result) => {
             if (result.success){
@@ -24,6 +27,8 @@ function SimularFrete() {
             }else{
                 setFreteSimulacaoValor(null)
             }
+        }).finally(() => {
+            Unblocking()
         });
     }
 

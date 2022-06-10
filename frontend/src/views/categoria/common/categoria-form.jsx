@@ -2,6 +2,7 @@ import { Button, Grid, InputLabel, TextField } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useBlocking } from '../../../hooks/useBlocking';
 import Categoria from '../../../models/categoria';
 import CategoriaService from '../../../services/categoria.service';
 import { showErrorMessage, showSuccessMessage } from '../../../utils/toast.utils';
@@ -13,6 +14,7 @@ const CategoriaForm = ({
 
     const navigate = useNavigate();
     const [categoria, setCategoria] = useState(categoriaProp)
+    const { Blocking, Unblocking } = useBlocking();
 
     const handleFormChange = (evt) => {
         if (!evt){
@@ -31,6 +33,7 @@ const CategoriaForm = ({
     }
 
     const CreateCategoria = () => {
+        Blocking()
         CategoriaService.CreateCategoria(categoria).then((result) => {
             if (result.success){
                 showSuccessMessage(result.message)
@@ -38,10 +41,13 @@ const CategoriaForm = ({
                 return;
             }
             showErrorMessage(result.message)
+        }).finally(() => {
+            Unblocking()
         });
     }
 
     const UpdateCategoria = () => {
+        Blocking()
         CategoriaService.UpdateCategoria(categoria.codigo, categoria).then((result) => {
             if (result.success){
                 showSuccessMessage(result.message)
@@ -49,6 +55,8 @@ const CategoriaForm = ({
                 return;
             }
             showErrorMessage(result.message)
+        }).finally(() => {
+            Unblocking()
         });
     }
 

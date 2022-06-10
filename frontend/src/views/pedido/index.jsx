@@ -4,18 +4,23 @@ import { useNavigate } from 'react-router-dom';
 import PedidoService from '../../services/pedido.service'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { brasilianDateMaskFromUTCString, priceMask } from '../../utils/mask.utils';
+import { useBlocking } from '../../hooks/useBlocking';
 
 const PedidoHome = () => {
     const [pedidos, setPedidos] = useState([]);
     const navigate = useNavigate();
+    const { Blocking, Unblocking } = useBlocking();
 
     useEffect(() => {
         fetchPedidos();
     }, []);
 
     const fetchPedidos = () => {
+        Blocking()
         PedidoService.GetAllPedidos().then((result) => {
             setPedidos(result.data)
+        }).finally(() => {
+            Unblocking()
         });
     }
 

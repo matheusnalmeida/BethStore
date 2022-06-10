@@ -9,12 +9,14 @@ import ResumoPedidoStep from './Steps/ResumoPedidoStep';
 import { ClientePedidoValid, FormaPagamentoValid } from './StepsValidator/step.validators';
 import PedidoService from '../../services/pedido.service'
 import { showErrorMessage, showSuccessMessage } from '../../utils/toast.utils';
+import { useBlocking } from '../../hooks/useBlocking';
 
 function PedidoForm() {
 
   const navigate = useNavigate();
   const { cartItems, handleCheckout } = useCarrinho();
   const [pedido, setPedido] = useState(Pedido())
+  const { Blocking, Unblocking } = useBlocking();
 
   const handleFormChange = (evt, mask, extraProperties = {}) => {
     if (!evt) {
@@ -33,6 +35,7 @@ function PedidoForm() {
   }
 
   const handleSubmit = () => {
+    Blocking()
     PedidoService.CreatePedido(pedido).then((result) => {
       if (result.success) {
         showSuccessMessage(result.message)
@@ -41,6 +44,8 @@ function PedidoForm() {
         return;
       }
       showErrorMessage(result.message)
+    }).finally(() => {
+      Unblocking()
     });
   }
 

@@ -1,6 +1,7 @@
 import { Grid, Typography } from '@mui/material';
 import { Container } from '@mui/system';
 import React, { useEffect, useState } from 'react'
+import { useBlocking } from '../../../hooks/useBlocking';
 import Pedido from '../../../models/pedido';
 import ClienteService from '../../../services/cliente.service';
 import ProdutosList from '../../carrinho/components/Produtos/ProdutosList';
@@ -13,13 +14,17 @@ const ResumoPedidoStep = ({
 }) => {
 
   const [cliente, setCliente] = useState()
+  const { Blocking, Unblocking } = useBlocking();
 
   useEffect(() => {
+    Blocking()
     ClienteService.GetCliente(pedido.cliente_codigo).then(
       (result) => {
         setCliente(result.data)
       }
-    )
+    ).finally(() => {
+      Unblocking()
+    })
   }, [pedido.cliente_codigo])
 
   return (

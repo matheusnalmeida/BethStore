@@ -1,6 +1,7 @@
 import { Container, Grid, MenuItem, Select, Typography } from '@mui/material';
 import React from 'react'
 import { BOLETO, CARTAO_CREDITO, PIX } from '../../../constants/forma-pagamento';
+import { useBlocking } from '../../../hooks/useBlocking';
 import Pedido from '../../../models/pedido';
 import PrazoEntregaService from '../../../services/prazo-entrega.service';
 import { brasilianDateMask } from '../../../utils/mask.utils'
@@ -8,13 +9,16 @@ import { brasilianDateMask } from '../../../utils/mask.utils'
 const FormaPagamentoStep = ({
   pedido = Pedido(),
   handleFormChange = () => { return true } }) => {
+  const { Blocking, Unblocking } = useBlocking();
 
   const onFormaPagamentoChange = (evt) => {    
+    Blocking()
     let previsaoEntrega = 
       brasilianDateMask(
         PrazoEntregaService.CalcularPrazoEntrega(evt.target.value)
       )
-      
+    Unblocking()
+    
     handleFormChange(
       evt,
       null,

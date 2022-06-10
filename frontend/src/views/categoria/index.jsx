@@ -7,22 +7,28 @@ import { Box } from '@mui/system';
 import CategoriaService from '../../services/categoria.service';
 import { showConfirmationDialog } from '../../utils/dialog.utils'
 import { showErrorMessage, showSuccessMessage } from '../../utils/toast.utils';
+import { useBlocking } from '../../hooks/useBlocking';
 
 const CategoriaHome = () => {
     const [categorias, setCategorias] = useState([]);
     const navigate = useNavigate();
+    const { Blocking, Unblocking } = useBlocking();
 
     useEffect(() => {
         fetchCategorias();
     }, []);
 
     const fetchCategorias = () => {
+        Blocking()
         CategoriaService.GetAllCategorias().then((result) => {
             setCategorias(result.data)
+        }).finally(() => {
+            Unblocking()
         });
     }
 
     const deleteCategoria = (codigo) => {
+        Blocking()
         CategoriaService.DeleteCategoria(codigo).then((result) => {
             if (result.success) {
                 showSuccessMessage(result.message)
@@ -30,6 +36,8 @@ const CategoriaHome = () => {
                 return;
             }
             showErrorMessage(result.message)
+        }).finally(() => {
+            Unblocking()
         });
     }
 
